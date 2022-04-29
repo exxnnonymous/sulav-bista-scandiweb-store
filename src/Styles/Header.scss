@@ -1,0 +1,138 @@
+@import "utils";
+
+header {
+  width: 100%;
+  height: $header-height;
+  background-color: $primary-white;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  .container {
+    width: 100%;
+    height: 100%;
+
+    padding: 0px 40px;
+
+    @include flex(space-between, center);
+
+    nav {
+      display: flex;
+      height: 100%;
+      a {
+        position: relative;
+        padding: 0px 15px;
+
+        line-height: $header-height;
+        height: 100%;
+
+        text-transform: uppercase;
+        font-size: $text-md;
+
+        transition: color 200ms ease-in;
+
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          height: 2px;
+          width: 100%;
+          opacity: 0;
+          transition: opacity 200ms ease-in;
+          background-color: $primary-green;
+        }
+
+        &.link-active {
+          color: $primary-green;
+          &::after {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    .logo {
+      svg {
+        width: 31px;
+      }
+    }
+
+    .actions {
+      @include flex(flex-end);
+      gap: 0.8em;
+      button {
+        padding: 5px;
+      }
+
+      .price__menu {
+        height: 100%;
+        position: relative;
+
+        .price__menu-main {
+          .price {
+            font-size: 18px;
+            position: relative;
+            font-weight: 300;
+            padding-right: 15px;
+
+            .icon {
+              position: absolute;
+              top: -5%;
+              right: 0;
+
+              & > svg {
+                width: 8px;
+                transform: rotate(180deg);
+                transition: transform 200ms ease-in-out;
+              }
+            }
+          }
+        }
+
+        .price__menu-dropdown {
+          position: absolute;
+          top: 70%;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: $primary-white;
+          box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
+          padding-block: 10px;
+          overflow: hidden;
+          height: 0;
+          opacity: 0;
+          transition: height 0ms 400ms, opacity 400ms 0ms;
+          ul {
+            min-width: max-content;
+
+            li {
+              padding: 5px 15px;
+              transition: background-color 200ms ease-in-out;
+              font-size: $text-md;
+              text-align: left;
+
+              &:hover {
+                background-color: #eeeeee;
+              }
+            }
+          }
+        }
+        
+
+        &:hover {
+          .price__menu-main .price .icon > svg {
+            transform: rotate(0deg);
+          }
+
+          .price__menu-dropdown {
+            height: auto;
+            opacity: 1;
+            transition: height 0ms 0ms, opacity 600ms 0ms;
+          }
+        }
+      
+        
+      }
+    }
+  }
+}

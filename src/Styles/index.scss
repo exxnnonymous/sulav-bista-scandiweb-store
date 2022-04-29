@@ -13,6 +13,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  // background-color: hsl(0, 0%, 70%);
 }
 
 h1, h2,h3, h4, h5, h6{
@@ -20,4 +21,22 @@ h1, h2,h3, h4, h5, h6{
   padding: 0;
 }
 
+a{
+  text-decoration: none;
+  color: black;
+}
 
+button{
+  font: $primary-font;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+ul, li{
+  padding: 0;
+  margin: 0;
+}
+
+li{
+  list-style-type: none;
+}

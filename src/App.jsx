@@ -16,15 +16,14 @@ class App extends React.Component {
     this.setState({ loading: true });
     const { updateState } = this.context;
 
-    const res = await client.query({ query: storeQuery });
-    updateState(res.data.categories);
+    const {data} = await client.query({ query: storeQuery });
+    updateState(data);
     this.setState({ loading: false });
   };
 
   componentDidMount() {
     this.getData();
   }
-
 
   mainComponent(loading) {
     if (loading) {
