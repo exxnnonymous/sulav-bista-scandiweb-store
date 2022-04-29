@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import { ApolloProvider } from '@apollo/client';
 
 import { StoreProvider } from "Context/storeContext";
@@ -10,13 +11,17 @@ import "Styles/index.scss";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
-    <StoreProvider>
-      <ApolloProvider client={client}>
-        <App />
-      </ApolloProvider>
-    </StoreProvider>
+    <BrowserRouter >
+      <StoreProvider>
+        <ApolloProvider client={client}>
+          <App />
+        </ApolloProvider>
+      </StoreProvider>
+    </BrowserRouter>
+
   </React.StrictMode>
 );
 

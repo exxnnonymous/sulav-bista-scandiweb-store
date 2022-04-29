@@ -4,16 +4,28 @@ export const storeQuery = gql`
   query {
     categories {
       name
-      products{
+      products {
         id
         name
         inStock
         gallery
-        prices{
+        category
+        prices {
           amount
-          currency{
+          currency {
             label
             symbol
+          }
+        }
+
+        attributes {
+          id
+          name
+          type
+          items {
+            displayValue
+            value
+            id
           }
         }
       }

@@ -13,3 +13,10 @@
     padding-inline: 40px;
     margin-inline: auto;
 }
+
+@mixin fit-image{
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center center;
+}

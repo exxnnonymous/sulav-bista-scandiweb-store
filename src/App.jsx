@@ -5,6 +5,8 @@ import "Styles/App.scss";
 import StoreContext from "Context/storeContext";
 import client from "Lib/apolloClient";
 import Category from "Pages/Category";
+import { Route, Routes } from "react-router-dom";
+import Product from "Pages/Product";
 
 class App extends React.Component {
   static contextType = StoreContext;
@@ -44,7 +46,10 @@ class App extends React.Component {
       return (
         <>
           <Header />
-          <Category />
+          <Routes>
+            <Route path="/" exact element={<Category />}  />
+            <Route path="products/:id" exact element={<Product />}/>
+          </Routes>
         </>
       );
     }

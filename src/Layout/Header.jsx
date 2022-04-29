@@ -1,4 +1,5 @@
 import StoreContext from "Context/storeContext";
+import { withRouter } from "Lib/utils";
 import React from "react";
 
 import 'Styles/Header.scss'
@@ -11,22 +12,28 @@ class Header extends React.Component {
 
 
 
+  handleLink = (changeCategory, name) => {
+    if(window.location.pathname !== "/"){
+      this.props.navigate('/')
+    }
+    changeCategory(name)
 
+  }
 
 
 
 
 
   render() {
-    const { category, currency, changeCurrency,changeCategory } = this.context;
+    const { category, currency, changeCurrency, changeCategory } = this.context;
 
     return (
       <header>
         <div className="container">
           <nav>
             {category.type.map((cat) => (
-              <button key={cat.name} className={cat.name === category.active.name ? "link-active" : ""} onClick={()=>{
-                changeCategory(cat.name)
+              <button key={cat.name} className={cat.name === category.active.name ? "link-active" : ""} onClick={() => {
+                this.handleLink(changeCategory, cat.name)
               }} >{cat.name}</button>
             ))}
           </nav>
@@ -118,7 +125,7 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export default withRouter(Header);
 
 
 class PriceDropdown extends React.Component {

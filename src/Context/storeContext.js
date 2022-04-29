@@ -31,12 +31,17 @@ export class StoreProvider extends React.Component {
     });
   };
 
-  getProducts = (category) => {
+  getProductsByCategory = (category) => {
     const res = this.state.category.type.filter(
       (cat) => cat.name === category
     )[0];
     return res.products;
   };
+
+  getProduct = (id)=>{
+    const {products} = this.state.category.type.filter(cat=>cat.name === "all")[0]
+    return (products.filter(pro => pro.id === id))[0]
+  }
 
 
   changeCurrency = (label) => {
@@ -59,7 +64,8 @@ export class StoreProvider extends React.Component {
       currency,
       category,
 
-      getProducts: this.getProducts,
+      getProductsByCategory: this.getProductsByCategory,
+      getProduct:this.getProduct,
       updateState: this.updateState,
       changeCurrency: this.changeCurrency,
       changeCategory: this.changeCategory,

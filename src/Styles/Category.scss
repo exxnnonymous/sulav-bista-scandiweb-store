@@ -1,6 +1,6 @@
 @import "utils";
 
-main {
+.category--page {
   --spacing: 60px;
   padding-top: var(--spacing);
   width: 100%;
@@ -44,11 +44,20 @@ main {
           position: relative;
           width: 100%;
 
+          .product__item-outofstock{
+            position: absolute;
+            inset: 0;
+            @include flex;
+
+            background-color: #ffffff;
+            opacity: .5;
+            font-size: 24px;
+            text-transform: uppercase;
+            color: #8D8F9A;
+          }
+
           img {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            object-position: center center;
+           @include fit-image;
           }
 
           button {
@@ -72,11 +81,22 @@ main {
         }
 
         .product__info {
+          display: block;
           font-size: 1rem;
           color: $secondary-gray;
+          
+          &:hover{
+            h4{
+              border-color: black;
+            }
+          }
+
           h4 {
             font-weight: 300;
             margin-bottom: 5px;
+            border-bottom: 1px solid white;
+            width: fit-content;
+            transition: border-color 200ms;
           }
           span {
             font-weight: 600;
