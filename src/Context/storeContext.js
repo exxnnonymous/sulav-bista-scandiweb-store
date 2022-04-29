@@ -7,38 +7,62 @@ export const StoreConsumer = StoreContext.Consumer;
 
 export class StoreProvider extends React.Component {
   state = {
-    categories: null,
+    category: null,
     currency: null,
+    activeProducts: null,
   };
 
-  changeCurrency = (label)=>{
-    const {currency} = this.state
-    const active = (currency.list.filter(cur=>cur.label===label))[0]
-    this.setState({currency: {...currency,active}})
-  }
+ 
 
   updateState = ({ currencies, categories }) => {
-    const active = {
-      symbol: currencies[0].symbol,
-      label: currencies[0].label,
-    };
+    const activeCurrency = currencies[0];
+
+    const activeCategory = categories[0];
+
     this.setState({
-      categories,
+      category: {
+        type: categories,
+        active: activeCategory,
+      },
       currency: {
-        list: currencies,
-        active,
+        type: currencies,
+        active: activeCurrency,
       },
     });
   };
 
+  getProducts = (category) => {
+    const res = this.state.category.type.filter(
+      (cat) => cat.name === category
+    )[0];
+    return res.products;
+  };
+
+
+  changeCurrency = (label) => {
+    const { currency } = this.state;
+    if(currency.active.label === label) return 
+    const active = currency.type.filter((cur) => cur.label === label)[0];
+    this.setState({ currency: { ...currency, active } });
+  };
+
+  changeCategory = (name) => {
+    const { category } = this.state;
+    if(category.active.name === name) return 
+    const active = category.type.filter((cat) => cat.name === name)[0];
+    this.setState({ category: { ...category, active } });
+  };
+
   render() {
-    const { categories, currency } = this.state;
+    const { category, currency } = this.state;
     const store = {
       currency,
-      categories,
+      category,
 
+      getProducts: this.getProducts,
       updateState: this.updateState,
-      changeCurrency:this.changeCurrency
+      changeCurrency: this.changeCurrency,
+      changeCategory: this.changeCategory,
     };
     return (
       <StoreContext.Provider value={store}>

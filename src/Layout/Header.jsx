@@ -18,14 +18,16 @@ class Header extends React.Component {
 
 
   render() {
-    const { categories, currency, changeCurrency } = this.context;
+    const { category, currency, changeCurrency,changeCategory } = this.context;
 
     return (
       <header>
         <div className="container">
           <nav>
-            {categories.map((category) => (
-              <a key={category.name} href="/" className={category.name === "all" ? "link-active" : ""}>{category.name}</a>
+            {category.type.map((cat) => (
+              <button key={cat.name} className={cat.name === category.active.name ? "link-active" : ""} onClick={()=>{
+                changeCategory(cat.name)
+              }} >{cat.name}</button>
             ))}
           </nav>
 
@@ -96,7 +98,7 @@ class Header extends React.Component {
                 </div>
               </div>
               <div className="price__menu-dropdown">
-                <PriceDropdown currencies={currency.list} changeCurrency={changeCurrency} />
+                <PriceDropdown currencies={currency.type} changeCurrency={changeCurrency} />
               </div>
             </button>
             <button className="cart__menu">

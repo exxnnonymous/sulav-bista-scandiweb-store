@@ -6,3 +6,10 @@
     justify-content: $justify;
     align-items: $align;
 }
+
+
+@mixin  max-width {
+    max-width: 1300px;
+    padding-inline: 40px;
+    margin-inline: auto;
+}
