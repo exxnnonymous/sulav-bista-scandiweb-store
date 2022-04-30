@@ -1,42 +1,119 @@
+@import "utils";
 
-@import 'utils';
-
-*,*::after,*::before{
+*,
+*::after,
+*::before {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: $primary-font, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: $primary-font, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding-block: $header-height;
 }
 
-h1, h2,h3, h4, h5, h6{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   padding: 0;
 }
 
-a{
+a {
   text-decoration: none;
   color: black;
 }
 
-button{
+button {
   font: $primary-font;
   background: none;
   border: none;
   cursor: pointer;
 }
-ul, li{
+ul,
+li {
   padding: 0;
   margin: 0;
 }
 
-li{
+li {
   list-style-type: none;
+}
+
+.container {
+  @include max-width;
+  width: 100%;
+}
+
+.product__attribute {
+  h6 {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .product__attribute-text,
+  .product__attribute-color {
+    padding-block: 10px 5px;
+    display: flex;
+    gap: 10px;
+
+    .input__wrapper {
+      border-radius: 3px;
+
+      input[type="radio"] {
+        // -webkit-appearance: none;
+        // appearance: none;
+        // background-color: #fff;
+        // margin: 0;
+        display: none;
+      }
+
+      label {
+        width: 100%;
+        height: 100%;
+        @include flex;
+        cursor: pointer;
+        transition: color 200ms, background-color 200ms;
+      }
+    }
+  }
+  .product__attribute-text {
+    .input__wrapper {
+      width: 63px;
+      height: 45px;
+      border: 1px solid $secondary-black;
+
+      input[type="radio"]:checked + label {
+        background-color: $secondary-black;
+        color: $primary-white;
+      }
+    }
+  }
+
+  .product__attribute-color {
+    .input__wrapper {
+      width: 32px;
+      aspect-ratio: 1;
+      background-color: var(--color);
+      position: relative;
+
+      label {
+        border: 1px solid $secondary-black;
+        transition: border-color 200ms, box-shadow 200ms;
+      }
+
+      input[type="radio"]:checked + label {
+        box-shadow: 0 0 0 1px white, 0 0 0 2px $primary-green;
+        border-color: transparent;
+      }
+    }
+  }
 }

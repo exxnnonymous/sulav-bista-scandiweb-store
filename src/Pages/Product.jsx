@@ -1,5 +1,5 @@
 import React from "react";
-import { filterPrice, sortAttributes, withRouter } from "Lib/utils";
+import {  sortAttributes, withRouter } from "Lib/utils";
 import StoreContext from "Context/storeContext";
 
 import 'Styles/Product.scss'
@@ -14,7 +14,6 @@ class Product extends React.Component {
         const { getProduct,currency } = this.context;
         const { name, gallery, category, attributes, prices,description } = getProduct(this.props.params.id)
         const sortedAttr = sortAttributes(attributes)
-        console.log(sortedAttr)
         return (
             <main className="product--page">
                 <div className="container">

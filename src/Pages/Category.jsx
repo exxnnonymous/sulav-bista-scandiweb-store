@@ -10,7 +10,7 @@ class Category extends React.Component {
 
     render() {
 
-        const { category, getProductsByCategory, currency } = this.context;
+        const { category, getProductsByCategory, currency,addToCart } = this.context;
         const products = getProductsByCategory(category.active.name)
 
         return (<main className="category--page">
@@ -21,7 +21,7 @@ class Category extends React.Component {
 
                 <div className="products__container">
                     {products ? products.map(product => (
-                        <ProductItem key={product.id} product={product} currency={currency.active} />
+                        <ProductItem key={product.id} product={product} currency={currency.active} addToCart={addToCart} />
                     )) : "No products!"}
                 </div>
             </div>

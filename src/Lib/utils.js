@@ -13,7 +13,6 @@ export function withRouter(Child) {
 }
 
 export const sortAttributes = (arr) => {
-  console.log(arr)
   const index = arr.indexOf(arr.find((a) => a.id === "Color"));
   if(index===-1) return arr
   const last = arr.length - 1;

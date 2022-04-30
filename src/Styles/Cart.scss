@@ -1,0 +1,105 @@
+@import "utils";
+
+.cart__page {
+  --spacing: 60px;
+  padding-top: var(--spacing);
+  width: 100%;
+  background-color: $primary-white;
+  color: $secondary-black;
+
+  .container {
+    > h1 {
+      font-size: 32px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .cart__items {
+      margin-top: 2rem;
+      padding-block: 1rem;
+      position: relative;
+      display: grid;
+      gap: 2rem;
+      &::before {
+        content: "";
+        width: 100%;
+        height: 1px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: $light-gray;
+      }
+     
+
+      .cart__item {
+        display: grid;
+        grid-template-columns: auto 150px;
+        align-items: center;
+        gap: 1rem;
+        padding-bottom: 1rem;
+
+        &:not(:last-of-type){
+            border-bottom: 1px solid $primary-green;
+        }
+        &:last-of-type{
+            border-bottom: 1px solid $light-gray;
+        }
+
+        .cart__info {
+          @include flex(space-between);
+          position: relative;
+
+          .product__info {
+            h2 {
+              margin-bottom: 10px;
+              text-transform: capitalize;
+              font-size: 30px;
+              font-weight: 600;
+            }
+            h1 {
+              margin-bottom: 10px;
+              font-weight: 400;
+              font-size: 30px;
+            }
+            & > span {
+              font-weight: 700;
+              font-size: 24px;
+            }
+            .product__attributes {
+              margin-top: 1rem;
+              display: grid;
+              gap: 1rem;
+            }
+          }
+
+          .cart__action{
+            position: absolute;
+            @include flex(space-between);
+            flex-direction: column;
+            height: 100%;
+            top: 0;
+            right: 0;
+
+            button{
+              border: 1px solid $secondary-black;
+              width: 30px;
+              aspect-ratio: 1;
+              font-size: 2rem;
+              font-weight: 300;
+              @include flex;
+              svg{
+                width: 15px
+              }
+            }
+          }
+        }
+
+        .product__img {
+          img {
+            @include fit-image;
+          }
+        }
+      }
+    }
+  }
+}

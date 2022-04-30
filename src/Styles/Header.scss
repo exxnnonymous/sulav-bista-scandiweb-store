@@ -84,7 +84,7 @@ header {
 
             .icon {
               position: absolute;
-              top: -5%;
+              top: -15%;
               right: 0;
 
               & > svg {
@@ -138,6 +138,25 @@ header {
         }
       
         
+      }
+
+      .cart__menu{
+        .icon{
+          position: relative;
+          span{
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            color: $primary-white;
+            background-color: $secondary-black;
+            border-radius: 50%;
+            width: 15px;
+            font-size: 10px;
+            font-weight: 500;
+            aspect-ratio: 1;
+            @include flex;
+          }
+        }
       }
     }
   }

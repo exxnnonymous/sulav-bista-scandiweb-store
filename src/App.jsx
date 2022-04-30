@@ -7,6 +7,7 @@ import client from "Lib/apolloClient";
 import Category from "Pages/Category";
 import { Route, Routes } from "react-router-dom";
 import Product from "Pages/Product";
+import CartPage from "Pages/Cart";
 
 class App extends React.Component {
   static contextType = StoreContext;
@@ -22,13 +23,19 @@ class App extends React.Component {
 
     try {
       const { data } = await client.query({ query: storeQuery });
-      updateState(data);
+      const cart = JSON.parse(localStorage.getItem('cart'))
+      updateState(data, cart);
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false, error: true });
 
     }
+
+   
+
   };
+
+
 
   componentDidMount() {
     this.getData();
@@ -48,6 +55,7 @@ class App extends React.Component {
           <Header />
           <Routes>
             <Route path="/" exact element={<Category />}  />
+            <Route path="/cart" exact element={<CartPage />}  />
             <Route path="products/:id" exact element={<Product />}/>
           </Routes>
         </>
