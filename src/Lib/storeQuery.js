@@ -7,6 +7,7 @@ export const storeQuery = gql`
       products {
         id
         name
+        brand
         inStock
         gallery
         category

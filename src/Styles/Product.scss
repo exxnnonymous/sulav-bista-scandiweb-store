@@ -51,7 +51,6 @@
         margin-block: 2rem;
         display: grid;
         gap: 1rem;
-
       }
       .product__price {
         h4 {
@@ -77,7 +76,7 @@
         border: 1px solid currentColor;
         transition: color 200ms, border-color 200ms, background-color 200ms;
 
-        &:hover {
+        &:not(.btn-disabled):hover {
           color: $primary-green;
           background-color: transparent;
         }
@@ -85,8 +84,8 @@
 
       .product__description {
         font-weight: 500;
-          font-size: 1rem;
-        
+        font-size: 1rem;
+
         ul {
           margin-top: 1rem;
           display: grid;
@@ -96,7 +95,7 @@
 
             &::marker {
               font-weight: 900;
-              content: '>';
+              content: ">";
             }
           }
         }

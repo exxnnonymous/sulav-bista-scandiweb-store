@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import StoreContext from "Context/storeContext";
 import { withRouter } from "Lib/utils";
 import { Logo, DownArrow, CartIcon } from "Assets/Icons";
+import CartOverlay from "Components/CartOverlay"
 
 import 'Styles/Header.scss'
 
@@ -11,7 +12,9 @@ class Header extends React.Component {
   static contextType = StoreContext;
 
 
-
+  state = {
+    cartOpen: false
+  }
 
 
   handleLink = (changeCategory, name) => {
@@ -22,6 +25,11 @@ class Header extends React.Component {
 
   }
 
+  handleCart = () => {
+    this.setState(prev => ({
+      cartOpen: !prev.cartOpen
+    }))
+  }
 
 
 
@@ -58,8 +66,9 @@ class Header extends React.Component {
                 <PriceDropdown currencies={currency.type} changeCurrency={changeCurrency} />
               </div>
             </button>
-            <Cart total={cart.totalItems} />
+            <Cart total={cart.totalItems} handleCart={this.handleCart} />
           </div>
+          <CartOverlay open={this.state.cartOpen} />
         </div>
       </header>
     );
@@ -89,11 +98,11 @@ class PriceDropdown extends React.Component {
 class Cart extends React.Component {
 
   render() {
-    const { total } = this.props
+    const { total, handleCart } = this.props
     return (
-      <button className="cart__menu">
+      <button className="cart__menu" onClick={handleCart}>
         <div className="icon">
-         <CartIcon />
+          <CartIcon />
           {total !== 0 && <span>{total}</span>}
         </div>
       </button>

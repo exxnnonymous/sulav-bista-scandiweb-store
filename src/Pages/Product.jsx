@@ -1,5 +1,5 @@
 import React from "react";
-import {  sortAttributes, withRouter } from "Lib/utils";
+import { sortAttributes, withRouter } from "Lib/utils";
 import StoreContext from "Context/storeContext";
 
 import 'Styles/Product.scss'
@@ -10,29 +10,38 @@ import Price from "Components/Price";
 class Product extends React.Component {
     static contextType = StoreContext;
 
+
+    formRef = React.createRef();
+
+    cartAddHandle = (id) => {
+        const values = []
+        Array.from(this.formRef.current).forEach(item => { if (item.checked) { values.push(item.value) } })
+        this.context.addToCart(id, values)
+    }
+
     render() {
-        const { getProduct,currency } = this.context;
-        const { name, gallery, category, attributes, prices,description } = getProduct(this.props.params.id)
+        const { getProduct, currency, cart } = this.context;
+        const { name, gallery, brand, attributes, prices, description, id, inStock } = getProduct(this.props.params.id)
         const sortedAttr = sortAttributes(attributes)
         return (
             <main className="product--page">
                 <div className="container">
                     <ProductImages gallery={gallery} name={name} />
                     <div className="product__info">
-                        <h2>{category}</h2>
+                        <h2>{brand}</h2>
                         <h1>{name}</h1>
-                        <div className="product__attributes">
+                        <form className="product__attributes" ref={this.formRef} >
 
                             {sortedAttr.map(attr => (
                                 <Attribute key={attr.id} {...attr} />
                             ))}
-                        </div>
+                        </form>
                         <div className="product__price">
                             <h4>Price: </h4>
-                            <Price currency={currency.active} prices={prices}/>
+                            <Price currency={currency.active} prices={prices} />
                         </div>
-                        <AddToCart />
-                        <div className="product__description" dangerouslySetInnerHTML={{__html: description}}></div>
+                        <AddToCart inStock={inStock} cartAddHandle={this.cartAddHandle} id={id} items={cart.items} />
+                        <div className="product__description" dangerouslySetInnerHTML={{ __html: description }}></div>
                     </div>
                 </div>
             </main>);
@@ -76,14 +85,25 @@ class ProductImages extends React.Component {
 }
 
 
-class AddToCart extends React.Component{
+class AddToCart extends React.Component {
 
-    render(){
-
+    render() {
+        const { cartAddHandle, inStock, id, items } = this.props
+        const added = !!(items.find(item => item.id === id));
+        const btnDisable = !!(added || !inStock)
         return (
-            <button className="product__cart-btn">
-                add to cart
+            <button className={`product__cart-btn ${btnDisable ? "btn-disabled" : ""}`} onClick={() => {
+                if (inStock && !added) {
+                    cartAddHandle(id)
+                }
+            }} >
+                {!inStock ? "out of stock" : added ? "added to cart" : "add to cart"}
             </button>
         )
     }
 }
+
+
+
+
+

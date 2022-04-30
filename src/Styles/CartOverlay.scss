@@ -1,0 +1,26 @@
+@import "utils";
+
+.cart__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #39374838;
+  z-index: 10;
+  padding-top: $header-height;
+  transform: scale(0);
+  overflow: hidden;
+  opacity: 0;
+  transition: transform 0ms 200ms, opacity 200ms 0ms;
+
+  &.open {
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 0ms 0ms, opacity 400ms 0ms;
+  }
+
+  .cart__box {
+    background-color: $primary-white;
+    width: 300px;
+    height: calc(100vh - 100px);
+    margin-left: auto;
+  }
+}

@@ -19,18 +19,6 @@ export class StoreProvider extends React.Component {
     },
   };
 
-  productsInCart = () => {
-    const { cart, category } = this.state;
-    const { items } = cart;
-    const { products } = category.type.find((cat) => cat.name === "all");
-    const productInCart = [];
-    items.forEach((item) => {
-      productInCart.push(products.find((pro) => pro.id === item.id));
-    });
-
-    return productInCart;
-  };
-
   updateState = ({ currencies, categories }, cart) => {
     const activeCurrency = currencies[0];
 
@@ -85,23 +73,43 @@ export class StoreProvider extends React.Component {
 
   // cart functionality
 
+  productsInCart = () => {
+    const { cart, category } = this.state;
+    const { items } = cart;
+    const { products } = category.type.find((cat) => cat.name === "all");
+    const productInCart = [];
+    items.forEach((item) => {
+      const product = products.filter((pro) => pro.id === item.id)[0];
+      const found = productInCart.filter((pro) => pro.id === product.id);
+      if (found.length === 0) {
+        const quantity = items.filter((item) => item.id === product.id).length;
+
+        productInCart.push({
+          ...product,
+          selected: item.attribute,
+          quantity,
+        });
+      }
+    });
+
+    return productInCart;
+  };
+
   updateLocalStorage = () => {
     localStorage.setItem("cart", JSON.stringify(this.state.cart));
   };
 
   addToCart = (id, attribute) => {
     const { cart } = this.state;
-    if (!attribute) {
-      this.setState(
-        {
-          cart: {
-            items: [...cart.items, { id }],
-            totalItems: cart.totalItems + 1,
-          },
+    this.setState(
+      {
+        cart: {
+          items: [...cart.items, { id, attribute }],
+          totalItems: cart.totalItems + 1,
         },
-        this.updateLocalStorage
-      );
-    }
+      },
+      this.updateLocalStorage
+    );
   };
 
   removeFromCart = (id) => {
