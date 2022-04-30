@@ -10,6 +10,7 @@ export const storeQuery = gql`
         inStock
         gallery
         category
+        description
         prices {
           amount
           currency {

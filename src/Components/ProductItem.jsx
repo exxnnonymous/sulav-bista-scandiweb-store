@@ -1,6 +1,7 @@
-import { filterPrice } from "Lib/utils"
 import React from "react"
 import { Link } from "react-router-dom"
+
+import Price from "Components/Price"
 
 
 export default class ProductItem extends React.Component {
@@ -8,7 +9,6 @@ export default class ProductItem extends React.Component {
     render() {
         const { currency, product } = this.props
         const { name, gallery, prices, id, inStock } = product
-        const price = filterPrice(prices, currency)
         return (
             <div className="product__item">
                 <div className="image__wrapper">
@@ -27,7 +27,7 @@ export default class ProductItem extends React.Component {
                 </div>
                 <Link className="product__info" to={`/products/${id}`}>
                     <h4>{name}</h4>
-                    <span>{price.currency.symbol} {price.amount.toFixed(2)}</span>
+                    <Price currency={currency} prices={prices} />
                 </Link>
             </div>
         )
