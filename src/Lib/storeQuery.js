@@ -19,7 +19,6 @@ export const storeQuery = gql`
             symbol
           }
         }
-
         attributes {
           id
           name

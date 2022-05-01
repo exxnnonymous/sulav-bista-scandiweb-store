@@ -6,6 +6,7 @@ const StoreContext = React.createContext(storeDefaultState);
 export const StoreConsumer = StoreContext.Consumer;
 
 export class StoreProvider extends React.Component {
+  // initial state
   state = {
     category: {
       type: null,
@@ -19,6 +20,7 @@ export class StoreProvider extends React.Component {
     },
   };
 
+  // to update store after data is fetched
   updateState = ({ currencies, categories }, cart, active) => {
     let activeCurrency;
     if (active) {
@@ -48,6 +50,7 @@ export class StoreProvider extends React.Component {
     });
   };
 
+  // to get product of particular category
   getProductsByCategory = (category) => {
     const res = this.state.category.type.filter(
       (cat) => cat.name === category
@@ -55,6 +58,7 @@ export class StoreProvider extends React.Component {
     return res.products;
   };
 
+  // to get product by id
   getProduct = (id) => {
     const { products } = this.state.category.type.filter(
       (cat) => cat.name === "all"
@@ -62,6 +66,7 @@ export class StoreProvider extends React.Component {
     return products.filter((pro) => pro.id === id)[0];
   };
 
+  // to chagne the active currency
   changeCurrency = (label) => {
     const { currency } = this.state;
     if (currency.active.label === label) return;
@@ -71,6 +76,7 @@ export class StoreProvider extends React.Component {
     });
   };
 
+  // to change category
   changeCategory = (name) => {
     const { category } = this.state;
     if (category.active.name === name) return;
@@ -78,8 +84,9 @@ export class StoreProvider extends React.Component {
     this.setState({ category: { ...category, active } });
   };
 
-  // cart functionality
+  // ********************** cart functionality **************
 
+  // grab products available in the cart
   productsInCart = () => {
     const { cart, category } = this.state;
     const { items } = cart;
@@ -149,10 +156,12 @@ export class StoreProvider extends React.Component {
     return productInCart;
   };
 
+  // updating localstorage after adding items to cart
   updateLocalStorage = () => {
     localStorage.setItem("cart", JSON.stringify(this.state.cart));
   };
 
+  // to add item to cart
   addToCart = (id, attribute) => {
     const { cart } = this.state;
     this.setState(
@@ -166,10 +175,29 @@ export class StoreProvider extends React.Component {
     );
   };
 
-  removeFromCart = (id) => {
+  // to remote item from cart
+  removeFromCart = (id, attribute) => {
     const { cart } = this.state;
     const items = [...cart.items];
-    const index = items.findIndex((i) => i.id === id);
+    let index = -1;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.id === id) {
+        let _found = true;
+        item.attribute.forEach((attr, idx) => {
+          if (attr !== attribute[idx]) {
+            _found = false;
+            return;
+          }
+        });
+        if (_found) {
+          index = i;
+          break;
+        }
+      }
+    }
+
     if (index > -1) {
       items.splice(index, 1);
       this.setState(
@@ -181,6 +209,7 @@ export class StoreProvider extends React.Component {
 
   render() {
     const { category, currency, cart } = this.state;
+    // sharing store properties and methods 
     const store = {
       currency,
       category,

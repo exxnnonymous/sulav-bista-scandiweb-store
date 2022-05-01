@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import StoreContext from "Context/storeContext";
 import { withRouter } from "Lib/utils";
-import { Logo, DownArrow, CartIcon } from "Assets/Icons";
 import CartOverlay from "Components/CartOverlay"
+import { Logo, DownArrow, CartIcon } from "Assets/Icons";
 
-import 'Styles/Header.scss'
+import 'Styles/header.scss'
 
 class Header extends React.Component {
 
@@ -17,7 +17,7 @@ class Header extends React.Component {
     showPrice: false
   }
 
-
+  // handle category links
   handleLink = (changeCategory, name) => {
     if (window.location.pathname !== "/") {
       this.props.navigate('/')
@@ -26,7 +26,7 @@ class Header extends React.Component {
 
   }
 
-  // handle price dropdown
+  // handle cart menu
   handleCart = () => {
     if (!this.state.showCart) {
       document.addEventListener("click", this.closeCart, false);
@@ -39,8 +39,8 @@ class Header extends React.Component {
     }));
   }
 
+  // close cart menu
   closeCart = (e) => {
-   
     if ((!e.target.closest('.cart__menu') && !e.target.closest('.cart__box')) || e.target.closest('.cart__links')) this.handleCart();
   };
 
@@ -58,6 +58,7 @@ class Header extends React.Component {
     }));
   };
 
+  // close price dropdown
   closeDropdown = e => {
     if (!e || !this.node.contains(e.target)) this.handleDropdown();
   };
@@ -77,8 +78,8 @@ class Header extends React.Component {
             ))}
           </nav>
 
-          <Link onClick={()=>{
-           changeCategory("all")
+          <Link onClick={() => {
+            changeCategory("all")
           }} className="logo" to="/">
             <Logo />
           </Link>
@@ -96,7 +97,7 @@ class Header extends React.Component {
                   </span>
                 </div>
               </div>
-              <div className="price__menu-dropdown">
+              <div className="price__menu-dropdown bg-white">
                 <PriceDropdown currencies={currency.type} changeCurrency={changeCurrency} closeDropdown={this.closeDropdown} />
               </div>
             </button>
@@ -112,6 +113,10 @@ class Header extends React.Component {
 export default withRouter(Header);
 
 
+
+
+
+// price dropdown component
 class PriceDropdown extends React.Component {
 
 
@@ -128,7 +133,7 @@ class PriceDropdown extends React.Component {
   }
 }
 
-
+// cart menu in header component
 class Cart extends React.Component {
 
   render() {

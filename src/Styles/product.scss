@@ -1,11 +1,8 @@
 @import "utils";
 
 .product--page {
-  --spacing: 60px;
-  padding-top: var(--spacing);
   width: 100%;
   background-color: $primary-white;
-  color: $secondary-black;
 
   .container {
     display: grid;

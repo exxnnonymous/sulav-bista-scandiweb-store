@@ -1,11 +1,6 @@
 @import "utils";
 
 .cart__page {
-  --spacing: 60px;
-  padding-top: var(--spacing);
-  width: 100%;
-  background-color: $primary-white;
-  color: $secondary-black;
 
   .container {
     > h1 {
@@ -20,6 +15,13 @@
       position: relative;
       display: grid;
       gap: 2rem;
+
+      .cart--empty{
+        font-size: 2rem;
+        margin-top: 1rem;
+        font-weight: 600;
+      }
+
       &::before {
         content: "";
         width: 100%;

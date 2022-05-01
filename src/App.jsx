@@ -1,17 +1,21 @@
 import React from "react";
+import { Route, Routes } from "react-router-dom";
 import Header from "Layout/Header";
-import { storeQuery } from "Lib/storeQuery";
-import "Styles/App.scss";
 import StoreContext from "Context/storeContext";
+import { storeQuery } from "Lib/storeQuery";
 import client from "Lib/apolloClient";
 import Category from "Pages/Category";
-import { Route, Routes } from "react-router-dom";
 import Product from "Pages/Product";
 import CartPage from "Pages/Cart";
 import Intro from "Components/Intro";
+import ServerError from "Components/ServerError";
+import Checkout from "Pages/Checkout";
+import "Styles/app.scss";
 
 class App extends React.Component {
   static contextType = StoreContext;
+
+  // initial state
   state = {
     loading: true,
     loadingFinal: false,
@@ -28,8 +32,11 @@ class App extends React.Component {
       const cart = JSON.parse(localStorage.getItem('cart'))
       const activeCurrency = JSON.parse(localStorage.getItem('active-currency'))
       updateState(data, cart, activeCurrency);
+
+      // starting final loading animation
       setTimeout(() => {
         this.setState({ loadingFinal: true }, () => {
+          // closing loading screen
           setTimeout(() => {
             this.setState({ loading: false })
           }, 800)
@@ -53,13 +60,16 @@ class App extends React.Component {
 
   mainComponent(loading, loadingFinal, error) {
     if (loading) {
+      // display loading screen
       return <Intro endLoading={loadingFinal} />;
     }
     if (error) {
-      return <div>Some error occured!</div>;
+      // display error screen
+      return <ServerError />;
     }
 
     else {
+      // main screen
       return (
         <>
           <Header />
@@ -67,6 +77,7 @@ class App extends React.Component {
             <Route path="/" exact element={<Category />} />
             <Route path="/cart" exact element={<CartPage />} />
             <Route path="products/:id" exact element={<Product />} />
+            <Route path="checkout" exact element={<Checkout />} />
           </Routes>
         </>
       );

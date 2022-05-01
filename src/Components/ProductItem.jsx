@@ -7,9 +7,6 @@ import LazyImg from "./LazyImg";
 
 export default class ProductItem extends React.Component {
 
-
-
-
     render() {
         const { currency, product } = this.props
         const { name, gallery, prices, id, inStock } = product;
@@ -17,7 +14,7 @@ export default class ProductItem extends React.Component {
         return (
             <Link className="product__item" to={`/products/${id}`}>
                 <div className="image__wrapper">
-                    {!inStock && <div className="product__item-outofstock">
+                    {!inStock && <div className="product__item-outofstock bg-white">
                         out of stock
                     </div>}
                     <LazyImg src={gallery[0]} alt={name} />

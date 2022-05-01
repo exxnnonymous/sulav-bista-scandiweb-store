@@ -4,10 +4,10 @@ import { sortAttributes } from "Lib/utils";
 import { Minus, Plus } from "Assets/Icons";
 import StoreContext from "Context/storeContext";
 import Price from "Components/Price";
-import "Styles/CartOverlay.scss"
 import { Attribute } from "Pages/Cart";
 import { Link } from "react-router-dom";
 import TotalPrice from "./TotalPrice";
+import "Styles/cartOverlay.scss"
 
 const cartRoot = document.getElementById("cart-overlay");
 
@@ -39,8 +39,6 @@ export default class CartOverlay extends React.Component {
 
 }
 
-
-
 class CartBox extends React.Component {
     static contextType = StoreContext
     render() {
@@ -48,15 +46,12 @@ class CartBox extends React.Component {
         const { productsInCart, currency, removeFromCart, addToCart } = this.context
         const products = productsInCart();
         return (
-            <div className="cart__box" >
+            <div className="cart__box bg-white" >
                 <h3>My Bag, <span>{totalItems} items</span></h3>
 
 
-                {products.length === 0 ? <span>Cart is empty</span> :
-
-                    <>
-
-
+                {products.length === 0 ? <span className="cart--empty">Cart is empty...</span> :
+                    (<>
                         <div className="cart__items">
                             {products.map((pro, idx) => (
                                 <CartItems key={pro.id + idx} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
@@ -73,15 +68,13 @@ class CartBox extends React.Component {
                                 <Link to="/checkout" >Check out</Link>
                             </div>
                         </div>
-                    </>
+                    </>)
                 }
 
             </div >
         )
     }
 }
-
-
 class CartItems extends React.Component {
     render() {
         const { brand, name, prices, currency, gallery, attributes, removeFromCart, id, selected, quantity, addToCart } = this.props
@@ -100,7 +93,7 @@ class CartItems extends React.Component {
                             <Plus />
                         </button>
                         <span>{quantity}</span>
-                        <button onClick={() => { removeFromCart(id) }}>
+                        <button onClick={() => { removeFromCart(id, selected) }}>
                             <Minus />
                         </button>
                     </div>

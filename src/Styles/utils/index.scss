@@ -1,4 +1,32 @@
 
 
 @import 'variables';
-@import 'mixins'
+@import 'mixins';
+
+.uppercase{
+    text-transform: uppercase;
+}
+
+.bg-white{
+    background-color: $primary-white;
+}
+
+.btn-disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+  
+  .btn-green {
+    background-color: $primary-green;
+    border-color: $primary-green !important;
+    color: $primary-white;
+    transition: background-color 200ms;
+  
+    &:hover {
+      background-color: $light-green;
+    }
+  }
+  
+  .cart--empty{
+    font-weight:500 ;
+  }

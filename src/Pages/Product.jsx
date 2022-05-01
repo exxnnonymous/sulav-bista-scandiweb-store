@@ -2,12 +2,13 @@ import React from "react";
 import { sortAttributes, withRouter } from "Lib/utils";
 import StoreContext from "Context/storeContext";
 
-import 'Styles/Product.scss'
 import Attribute from "Components/ProductAttribute";
 import Price from "Components/Price";
 import LazyImg from "Components/LazyImg";
+import 'Styles/product.scss'
 
 
+// single product component
 class Product extends React.Component {
     static contextType = StoreContext;
     constructor() {
@@ -16,8 +17,9 @@ class Product extends React.Component {
         this.formRef = React.createRef();
     }
 
-
+// to add item to cart
     cartAddHandle = (id) => {
+        // grabbing values of radio button from the form
         const values = []
         Array.from(this.formRef.current).forEach(item => { if (item.checked) { values.push(item.value) } })
         this.context.addToCart(id, values)
@@ -28,7 +30,7 @@ class Product extends React.Component {
         const { name, gallery, brand, attributes, prices, description, id, inStock } = getProduct(this.props.params.id)
         const sortedAttr = sortAttributes(attributes)
         return (
-            <main className="product--page">
+            <main className="product--page page">
                 <div className="container">
                     <ProductImages gallery={gallery} name={name} />
                     <div className="product__info">
@@ -56,7 +58,7 @@ export default withRouter(Product);
 
 
 
-
+// product images gallery component
 class ProductImages extends React.Component {
     state = {
         activeImg: this.props.gallery[0]
@@ -87,7 +89,7 @@ class ProductImages extends React.Component {
     }
 }
 
-
+// add to cart button
 class AddToCart extends React.Component {
 
     render() {

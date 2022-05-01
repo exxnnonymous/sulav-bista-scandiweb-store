@@ -5,26 +5,31 @@ import StoreContext from "Context/storeContext";
 import { sortAttributes } from "Lib/utils";
 import React from "react";
 import { Link } from "react-router-dom";
-import "Styles/Cart.scss"
+import "Styles/cart.scss"
 
 
 // cart page
 class CartPage extends React.Component {
     static contextType = StoreContext;
-    constructor(){
+    constructor() {
         super();
         document.title = "Cart - Scandiweb Store"
+    }
+    handleLink = (e) => {
+        if (this.context.cart.totalItems === 0) {
+            e.preventDefault()
+        }
     }
     render() {
         const { productsInCart, currency, removeFromCart, addToCart, cart } = this.context
         const products = productsInCart();
-        return (<main className="cart__page">
+        return (<main className="cart__page page">
             <div className="container">
-                <h1>Cart</h1>
+                <h1 className="uppercase">Cart</h1>
                 <div className="cart__items">
-                    {products.length === 0 ? "Cart is empty" :
+                    {products.length === 0 ? <div className="cart--empty">Cart is empty...</div> :
                         products.map((pro, idx) => (
-                            <CartProduct key={pro.id+ idx} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
+                            <CartProduct key={pro.id + idx} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
                         ))
                     }
                 </div>
@@ -33,9 +38,9 @@ class CartPage extends React.Component {
                         Qty: <span>{cart.totalItems}</span>
                     </div>
                     <div className="total">
-                       Total: <TotalPrice products={products} currency={currency.active} />
+                        Total: <TotalPrice products={products} currency={currency.active} />
                     </div>
-                    <Link to="/checkout">Order</Link>
+                    <Link to="/checkout" onClick={this.handleLink} className={cart.totalItems === 0 ? "btn-disabled" : ""} >Order</Link>
                 </div>
             </div>
         </main>);
@@ -66,7 +71,7 @@ class CartProduct extends React.Component {
                             <Plus />
                         </button>
                         <span>{quantity}</span>
-                        <button onClick={() => { removeFromCart(id) }}>
+                        <button onClick={() => { removeFromCart(id, selected) }}>
                             <Minus />
                         </button>
                     </div>
