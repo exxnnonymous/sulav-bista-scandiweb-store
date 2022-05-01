@@ -2,9 +2,11 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import Price from "Components/Price"
+import LazyImg from "./LazyImg";
 
 
 export default class ProductItem extends React.Component {
+
 
 
 
@@ -18,7 +20,7 @@ export default class ProductItem extends React.Component {
                     {!inStock && <div className="product__item-outofstock">
                         out of stock
                     </div>}
-                    <img src={gallery[0]} alt={name} />
+                    <LazyImg src={gallery[0]} alt={name} />
                 </div>
                 <div className="product__info" >
                     <h4>{name}</h4>

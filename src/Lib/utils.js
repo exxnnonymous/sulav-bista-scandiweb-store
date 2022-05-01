@@ -24,3 +24,12 @@ export const sortAttributes = (arr) => {
   }
   return newArr
 };
+
+
+export const totalPrice = (products, currency) =>{
+  const totalPrice = products.reduce((total, item)=>{
+    const price = item.prices.find(i=>i.currency.label === currency.label)
+    return total + (price.amount * item.quantity)
+  },0)
+  return totalPrice
+} 

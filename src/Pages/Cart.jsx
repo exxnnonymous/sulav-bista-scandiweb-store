@@ -1,26 +1,41 @@
 import { Minus, Plus } from "Assets/Icons";
 import Price from "Components/Price";
+import TotalPrice from "Components/TotalPrice";
 import StoreContext from "Context/storeContext";
 import { sortAttributes } from "Lib/utils";
 import React from "react";
+import { Link } from "react-router-dom";
 import "Styles/Cart.scss"
 
 
 // cart page
 class CartPage extends React.Component {
     static contextType = StoreContext;
+    constructor(){
+        super();
+        document.title = "Cart - Scandiweb Store"
+    }
     render() {
-        const { productsInCart, currency, removeFromCart,addToCart } = this.context
+        const { productsInCart, currency, removeFromCart, addToCart, cart } = this.context
         const products = productsInCart();
         return (<main className="cart__page">
             <div className="container">
                 <h1>Cart</h1>
                 <div className="cart__items">
                     {products.length === 0 ? "Cart is empty" :
-                        products.map(pro => (
-                            <CartProduct key={pro.id} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
+                        products.map((pro, idx) => (
+                            <CartProduct key={pro.id+ idx} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
                         ))
                     }
+                </div>
+                <div className="cart__total">
+                    <div className="quantity">
+                        Qty: <span>{cart.totalItems}</span>
+                    </div>
+                    <div className="total">
+                       Total: <TotalPrice products={products} currency={currency.active} />
+                    </div>
+                    <Link to="/checkout">Order</Link>
                 </div>
             </div>
         </main>);
@@ -34,7 +49,7 @@ export default CartPage;
 class CartProduct extends React.Component {
 
     render() {
-        const { brand, name, prices, currency, gallery, attributes, removeFromCart, id, selected,quantity, addToCart } = this.props
+        const { brand, name, prices, currency, gallery, attributes, removeFromCart, id, selected, quantity, addToCart } = this.props
         const sortedAttr = sortAttributes(attributes)
         return (
 
@@ -44,10 +59,10 @@ class CartProduct extends React.Component {
                         <h2>{brand}</h2>
                         <h1>{name}</h1>
                         <Price currency={currency.active} prices={prices} />
-                        <Attribute sortedAttr={sortedAttr} selected={selected}/>
+                        <Attribute sortedAttr={sortedAttr} selected={selected} />
                     </div>
                     <div className="cart__action">
-                        <button onClick={()=>{addToCart(id,selected)}}>
+                        <button onClick={() => { addToCart(id, selected) }}>
                             <Plus />
                         </button>
                         <span>{quantity}</span>
@@ -65,23 +80,24 @@ class CartProduct extends React.Component {
 }
 
 // attribute of product
-class Attribute extends React.Component {
+export class Attribute extends React.Component {
 
     render() {
-        const { sortedAttr,selected } = this.props
+        const { sortedAttr, selected } = this.props
         return (
             <div className="product__attributes">
                 {sortedAttr.map((attr, id) => {
                     return (
-                    <AttributeItem key={attr.id} {...attr} selected={selected[id]}/>
-                )})}
+                        <AttributeItem key={attr.id} {...attr} selected={selected[id]} />
+                    )
+                })}
             </div>
         )
     }
 }
 
 // items from attribute
-class AttributeItem extends React.Component {
+export class AttributeItem extends React.Component {
 
     render() {
         const { name, type, items, selected } = this.props
@@ -89,11 +105,11 @@ class AttributeItem extends React.Component {
             <div className="product__attribute">
                 <h6>{name}:</h6>
                 <div className={`product__attribute-${type === "swatch" ? "color" : "text"}`}>
-                    { items.map(i => {
+                    {items.map(i => {
                         const style = type === "swatch" ? { "--color": i.value } : null;
                         return (
-                            <div key={i.id} className={`attr__group ${selected === i.id ? "attr__selected" : ""}`}  style={style}>
-                                    {type === "text" && i.value}
+                            <div key={i.id} className={`attr__group ${selected === i.id ? "attr__selected" : ""}`} style={style}>
+                                {type === "text" && i.value}
                             </div>
                         )
                     })}

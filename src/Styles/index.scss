@@ -54,6 +54,7 @@ li {
 }
 
 .product__attribute {
+  @include grid(10px);
   h6 {
     font-size: 1rem;
     font-weight: 700;
@@ -61,7 +62,6 @@ li {
   }
   .product__attribute-text,
   .product__attribute-color {
-    padding-block: 10px 5px;
     display: flex;
     gap: 10px;
 
@@ -104,7 +104,8 @@ li {
   }
 
   .product__attribute-color {
-    .input__wrapper,.attr__group {
+    .input__wrapper,
+    .attr__group {
       width: 32px;
       aspect-ratio: 1;
       background-color: var(--color);
@@ -115,7 +116,7 @@ li {
         transition: border-color 200ms, box-shadow 200ms;
       }
 
-      input[type="radio"]:checked + label, .attr__selected {
+      input[type="radio"]:checked + label {
         box-shadow: 0 0 0 2px white, 0 0 0 4px $secondary-black;
         border-color: transparent;
       }
@@ -131,4 +132,118 @@ li {
 .btn-disabled {
   opacity: 0.8;
   cursor: not-allowed;
+}
+
+.btn-green {
+  background-color: $primary-green;
+  border-color: $primary-green !important;
+  color: $primary-white;
+  transition: background-color 200ms;
+
+  &:hover {
+    background-color: $light-green;
+  }
+}
+
+// intro loading styling
+
+$boxes: 2;
+$durationAll: 1s;
+$duration: -$durationAll / $boxes;
+$loader-height: 5px;
+$color: $primary-green;
+
+.intro__wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  @include flex;
+
+  .loading__box {
+    margin-bottom: 200px;
+    @include flex;
+    width: 200px;
+    height: 150px;
+    position: relative;
+
+    .logo {
+      position: relative;
+      z-index: -1;
+
+      transition: transform 1000ms ease-in, opacity 600ms ease-in;
+      svg {
+        transform: scale(3);
+      }
+    }
+
+    .wrapper {
+      position: absolute;
+      width: 100%;
+      height: $loader-height;
+      bottom: 0;
+      transition: opacity 500ms 200ms;
+
+      .loader {
+        height: 100%;
+        display: flex;
+        transform: translateZ(0);
+      }
+      div {
+        flex: 1;
+        background: #{$color};
+        animation: go #{$durationAll} infinite alternate ease;
+        box-shadow: 0 0 20px #{$color};
+
+        &:nth-child(1) {
+          animation-delay: $duration * ($boxes - 1);
+        }
+        &:nth-child(2) {
+          animation-delay: $duration * ($boxes - 2);
+        }
+      }
+    }
+  }
+
+  &.loading-end {
+    .loading__box {
+      .logo {
+        transform: translateY(70px);
+        opacity: 0;
+      }
+      .wrapper {
+        opacity: 0;
+      }
+    }
+  }
+}
+
+@keyframes go {
+  100% {
+    background: transparent;
+    flex: 10;
+    box-shadow: 0 0 0 transparent;
+  }
+}
+
+// skeleton styling
+.skeleton {
+  width: 100%;
+  background-color: $light-black;
+  aspect-ratio: 1;
+
+  position: relative;
+  z-index: 99;
+  animation:skeleton__animation 1s linear infinite
+}
+
+@keyframes skeleton__animation {
+  0% {
+    background-color: $light-black;
+  }
+  50% {
+    background-color: $semi-light-black;
+  }
+  100%{
+    background-color: $light-black;
+  }
 }

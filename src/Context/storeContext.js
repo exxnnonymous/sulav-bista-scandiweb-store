@@ -19,8 +19,13 @@ export class StoreProvider extends React.Component {
     },
   };
 
-  updateState = ({ currencies, categories }, cart) => {
-    const activeCurrency = currencies[0];
+  updateState = ({ currencies, categories }, cart, active) => {
+    let activeCurrency;
+    if (active) {
+      activeCurrency = active;
+    } else {
+      activeCurrency = currencies[0];
+    }
 
     const activeCategory = categories[0];
     if (!cart) {
@@ -61,7 +66,9 @@ export class StoreProvider extends React.Component {
     const { currency } = this.state;
     if (currency.active.label === label) return;
     const active = currency.type.filter((cur) => cur.label === label)[0];
-    this.setState({ currency: { ...currency, active } });
+    this.setState({ currency: { ...currency, active } }, () => {
+      localStorage.setItem("active-currency", JSON.stringify(active));
+    });
   };
 
   changeCategory = (name) => {
@@ -80,18 +87,65 @@ export class StoreProvider extends React.Component {
     const productInCart = [];
     items.forEach((item) => {
       const product = products.filter((pro) => pro.id === item.id)[0];
-      const found = productInCart.filter((pro) => pro.id === product.id);
-      if (found.length === 0) {
-        const quantity = items.filter((item) => item.id === product.id).length;
+      if (item.attribute.length > 0) {
+        const found = [];
+        for (let i = 0; i < productInCart.length; i++) {
+          const pro = productInCart[i];
 
-        productInCart.push({
-          ...product,
-          selected: item.attribute,
-          quantity,
-        });
+          if (pro.id === product.id) {
+            let _found = true;
+            pro.selected.forEach((p, idx) => {
+              if (p !== item.attribute[idx]) {
+                _found = false;
+                return;
+              }
+            });
+            if (_found) {
+              found.push(pro);
+            }
+          }
+        }
+
+        if (found.length === 0) {
+          let quantity = 0;
+          items.forEach((val) => {
+            if (val.id === item.id) {
+              let _found = false;
+
+              val.attribute.forEach((v, idx) => {
+                if (v === item.attribute[idx]) {
+                  _found = true;
+                } else {
+                  _found = false;
+                }
+              });
+
+              if (_found) {
+                quantity++;
+              }
+            }
+          });
+
+          productInCart.push({
+            ...product,
+            selected: item.attribute,
+            quantity,
+          });
+        }
+      } else {
+        const found = productInCart.filter((i) => i.id === product.id);
+
+        if (found.length === 0) {
+          const quantity = items.filter((i) => i.id === product.id).length;
+
+          productInCart.push({
+            ...product,
+            selected: item.attribute,
+            quantity,
+          });
+        }
       }
     });
-
     return productInCart;
   };
 

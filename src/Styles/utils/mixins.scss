@@ -1,22 +1,36 @@
-
-
-
-@mixin flex($justify:center, $align:center) {
-    display: flex;
-    justify-content: $justify;
-    align-items: $align;
+@mixin flex($justify: center, $align: center) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
 }
 
-
-@mixin  max-width {
-    max-width: 1300px;
-    padding-inline: 40px;
-    margin-inline: auto;
+@mixin max-width {
+  max-width: 1300px;
+  padding-inline: 40px;
+  margin-inline: auto;
 }
 
-@mixin fit-image{
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    object-position: center center;
+@mixin fit-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center center;
+}
+
+@mixin grid($gap: 1rem) {
+  display: grid;
+  gap: $gap;
+}
+
+@mixin btn-color(
+  $bg: $primary-green,
+  $color: $primary-white,
+  $border: $primary-green
+) {
+  color: $color;
+  background-color: $bg;
+  border: 1px solid $border;
+  transition: background-color 200ms;
+
+  
 }

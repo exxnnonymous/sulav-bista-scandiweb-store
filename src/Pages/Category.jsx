@@ -6,7 +6,10 @@ import ProductItem from "Components/ProductItem";
 
 class Category extends React.Component {
     static contextType = StoreContext;
-
+    constructor(){
+        super();
+        document.title = "Scandiweb Store"
+    }
 
     render() {
 

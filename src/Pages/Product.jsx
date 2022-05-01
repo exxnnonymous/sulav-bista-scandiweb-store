@@ -5,13 +5,17 @@ import StoreContext from "Context/storeContext";
 import 'Styles/Product.scss'
 import Attribute from "Components/ProductAttribute";
 import Price from "Components/Price";
+import LazyImg from "Components/LazyImg";
 
 
 class Product extends React.Component {
     static contextType = StoreContext;
+    constructor() {
+        super();
+        document.title = "Scandiweb Store"
+        this.formRef = React.createRef();
+    }
 
-
-    formRef = React.createRef();
 
     cartAddHandle = (id) => {
         const values = []
@@ -72,12 +76,11 @@ class ProductImages extends React.Component {
             <div className="product__images">
                 <div className="product__images-gallery">
                     {gallery.map((url, index) => (
-                        <img key={url} src={url} alt={name} onClick={() => { this.changeImg(index) }} />
-
+                        <LazyImg key={url} src={url} alt={name} onClick={() => { this.changeImg(index) }} />
                     ))}
                 </div>
                 <div className="product__images-main">
-                    <img src={activeImg} alt={name} />
+                    <LazyImg src={activeImg} alt={name} />
                 </div>
             </div>
         )
@@ -88,16 +91,14 @@ class ProductImages extends React.Component {
 class AddToCart extends React.Component {
 
     render() {
-        const { cartAddHandle, inStock, id, items } = this.props
-        const added = !!(items.find(item => item.id === id));
-        const btnDisable = !!(added || !inStock)
+        const { cartAddHandle, inStock, id } = this.props
         return (
-            <button className={`product__cart-btn ${btnDisable ? "btn-disabled" : ""}`} onClick={() => {
-                if (inStock && !added) {
+            <button className={`product__cart-btn ${!inStock ? "btn-disabled" : ""}`} onClick={() => {
+                if (inStock) {
                     cartAddHandle(id)
                 }
             }} >
-                {!inStock ? "out of stock" : added ? "added to cart" : "add to cart"}
+                {!inStock ? "out of stock" : "add to cart"}
             </button>
         )
     }

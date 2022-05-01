@@ -13,7 +13,8 @@ class Header extends React.Component {
 
 
   state = {
-    cartOpen: false
+    showCart: false,
+    showPrice: false
   }
 
 
@@ -25,12 +26,41 @@ class Header extends React.Component {
 
   }
 
+  // handle price dropdown
   handleCart = () => {
-    this.setState(prev => ({
-      cartOpen: !prev.cartOpen
-    }))
+    if (!this.state.showCart) {
+      document.addEventListener("click", this.closeCart, false);
+    } else {
+      document.removeEventListener("click", this.closeCart, false);
+    }
+
+    this.setState(prevState => ({
+      showCart: !prevState.showCart
+    }));
   }
 
+  closeCart = (e) => {
+   
+    if ((!e.target.closest('.cart__menu') && !e.target.closest('.cart__box')) || e.target.closest('.cart__links')) this.handleCart();
+  };
+
+
+  // handle price dropdown
+  handleDropdown = () => {
+    if (!this.state.showPrice) {
+      document.addEventListener("click", this.closeDropdown, false);
+    } else {
+      document.removeEventListener("click", this.closeDropdown, false);
+    }
+
+    this.setState(prevState => ({
+      showPrice: !prevState.showPrice
+    }));
+  };
+
+  closeDropdown = e => {
+    if (!e || !this.node.contains(e.target)) this.handleDropdown();
+  };
 
 
 
@@ -47,14 +77,18 @@ class Header extends React.Component {
             ))}
           </nav>
 
-          <Link className="logo" to="/cart">
+          <Link onClick={()=>{
+           changeCategory("all")
+          }} className="logo" to="/">
             <Logo />
           </Link>
 
 
           <div className="actions">
-            <button className="price__menu">
-              <div className="price__menu-main">
+            <button ref={node => {
+              this.node = node;
+            }} className={`price__menu ${this.state.showPrice ? "toggled" : ""}`} >
+              <div className="price__menu-main" onClick={this.handleDropdown}>
                 <div className="price">
                   <span>{currency.active.symbol}</span>
                   <span className="icon">
@@ -63,12 +97,12 @@ class Header extends React.Component {
                 </div>
               </div>
               <div className="price__menu-dropdown">
-                <PriceDropdown currencies={currency.type} changeCurrency={changeCurrency} />
+                <PriceDropdown currencies={currency.type} changeCurrency={changeCurrency} closeDropdown={this.closeDropdown} />
               </div>
             </button>
             <Cart total={cart.totalItems} handleCart={this.handleCart} />
           </div>
-          <CartOverlay open={this.state.cartOpen} />
+          <CartOverlay open={this.state.showCart} />
         </div>
       </header>
     );
@@ -83,11 +117,11 @@ class PriceDropdown extends React.Component {
 
 
   render() {
-    const { currencies, changeCurrency } = this.props
+    const { currencies, changeCurrency, closeDropdown } = this.props
     return (
       <ul>
         {currencies.map(currency => (
-          <li key={currency.label} onClick={() => { changeCurrency(currency.label) }}>{currency.symbol} {currency.label}</li>
+          <li key={currency.label} onClick={() => { closeDropdown(); changeCurrency(currency.label) }}>{currency.symbol} {currency.label}</li>
         ))}
       </ul>
     )

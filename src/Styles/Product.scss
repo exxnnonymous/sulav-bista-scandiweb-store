@@ -36,6 +36,7 @@
     }
 
     .product__info {
+      
       h2 {
         text-transform: capitalize;
         font-size: 30px;
@@ -44,15 +45,17 @@
       }
       h1 {
         font-size: 30px;
+        margin-bottom: 1rem;
         font-weight: 400;
       }
 
       .product__attributes {
-        margin-block: 2rem;
         display: grid;
         gap: 1rem;
       }
       .product__price {
+        margin-top: 1rem;
+
         h4 {
           text-transform: uppercase;
           margin-bottom: 10px;
