@@ -2,6 +2,7 @@ import { Minus, Plus } from "Assets/Icons";
 import Price from "Components/Price";
 import TotalPrice from "Components/TotalPrice";
 import StoreContext from "Context/storeContext";
+import withHeader from "Layout/HeaderHoc";
 import { sortAttributes } from "Lib/utils";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -47,7 +48,7 @@ class CartPage extends React.Component {
     }
 }
 
-export default CartPage;
+export default withHeader(CartPage);
 
 
 // products in cart page

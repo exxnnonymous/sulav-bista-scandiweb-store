@@ -26,13 +26,17 @@
         gap: 1rem;
         box-shadow: 0 0 10px rgba(168, 172, 176, 0.2);
         transition: box-shadow 200ms ease-in;
+        position: relative;
+        a{
+          position: absolute;
+          inset: 0;
+        }
 
         &:hover {
           box-shadow: 0 0 10px rgba(168, 172, 176, 0.5);
 
           .image__wrapper button {
             opacity: 1;
-            transform: rotate(360deg);
           }
         }
         .image__wrapper {

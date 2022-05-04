@@ -1,4 +1,5 @@
 import React from "react";
+import parse from "html-react-parser"
 import { sortAttributes, withRouter } from "Lib/utils";
 import StoreContext from "Context/storeContext";
 
@@ -6,6 +7,9 @@ import Attribute from "Components/ProductAttribute";
 import Price from "Components/Price";
 import LazyImg from "Components/LazyImg";
 import 'Styles/product.scss'
+import withHeader from "Layout/HeaderHoc";
+import client from "Apollo/apolloClient";
+import { productQuery } from "Apollo/queries";
 
 
 // single product component
@@ -15,9 +19,23 @@ class Product extends React.Component {
         super();
         document.title = "Scandiweb Store"
         this.formRef = React.createRef();
+        this.state = {
+            product: null
+        }
     }
 
-// to add item to cart
+    async componentDidMount() {
+        const { id } = this.props.params
+        const { data } = await client.query({
+            query: productQuery,
+            variables: {
+                id: id
+            }
+        })
+        this.setState({ product: data.product })
+    }
+
+    // to add item to cart
     cartAddHandle = (id) => {
         // grabbing values of radio button from the form
         const values = []
@@ -26,9 +44,16 @@ class Product extends React.Component {
     }
 
     render() {
-        const { getProduct, currency, cart } = this.context;
-        const { name, gallery, brand, attributes, prices, description, id, inStock } = getProduct(this.props.params.id)
+
+
+        if (!this.state.product) return <div>Loading...</div>
+        const { currency } = this.context;
+
+
+        const { name, gallery, brand, attributes, prices, description, id, inStock } = this.state.product
         const sortedAttr = sortAttributes(attributes)
+
+
         return (
             <main className="product--page page">
                 <div className="container">
@@ -46,15 +71,15 @@ class Product extends React.Component {
                             <h4>Price: </h4>
                             <Price currency={currency.active} prices={prices} />
                         </div>
-                        <AddToCart inStock={inStock} cartAddHandle={this.cartAddHandle} id={id} items={cart.items} />
-                        <div className="product__description" dangerouslySetInnerHTML={{ __html: description }}></div>
+                        <AddToCart inStock={inStock} cartAddHandle={this.cartAddHandle} id={id} />
+                        <div className="product__description">{parse(description)}</div>
                     </div>
                 </div>
             </main>);
     }
 }
 
-export default withRouter(Product);
+export default withRouter(withHeader(Product));
 
 
 

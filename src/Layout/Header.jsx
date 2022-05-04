@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import StoreContext from "Context/storeContext";
 import { withRouter } from "Lib/utils";
 import CartOverlay from "Components/CartOverlay"
@@ -66,21 +66,18 @@ class Header extends React.Component {
 
 
   render() {
-    const { category, currency, changeCurrency, changeCategory, cart } = this.context;
+    const { categories, currency, changeCurrency, cart } = this.context;
+    if(!categories && !currency)return ""
     return (
       <header>
         <div className="container">
           <nav>
-            {category.type.map((cat) => (
-              <button key={cat.name} className={cat.name === category.active.name ? "link-active" : ""} onClick={() => {
-                this.handleLink(changeCategory, cat.name)
-              }} >{cat.name}</button>
+            {categories.map((cat) => (
+              <NavLink key={cat.name} to={`/category/${cat.name}`} className={(navData) => (navData.isActive ? 'link-active' : '')} >{cat.name}</NavLink>
             ))}
           </nav>
 
-          <Link onClick={() => {
-            changeCategory("all")
-          }} className="logo" to="/">
+          <Link className="logo" to="/">
             <Logo />
           </Link>
 
@@ -101,9 +98,9 @@ class Header extends React.Component {
                 <PriceDropdown currencies={currency.type} changeCurrency={changeCurrency} closeDropdown={this.closeDropdown} />
               </div>
             </button>
-            <Cart total={cart.totalItems} handleCart={this.handleCart} />
+            {/* <Cart total={cart.totalItems} handleCart={this.handleCart} /> */}
           </div>
-          <CartOverlay open={this.state.showCart} />
+          {/* <CartOverlay open={this.state.showCart} /> */}
         </div>
       </header>
     );

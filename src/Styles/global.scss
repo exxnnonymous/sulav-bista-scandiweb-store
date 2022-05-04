@@ -130,13 +130,13 @@ main{
       }
 
       input[type="radio"]:checked + label {
-        box-shadow: 0 0 0 2px white, 0 0 0 4px $secondary-black;
+        box-shadow: 0 0 0 1px white, 0 0 0 4px $primary-green;
         border-color: transparent;
       }
     }
 
     .attr__selected {
-      box-shadow: 0 0 0 2px white, 0 0 0 4px $secondary-black;
+      box-shadow: 0 0 0 1px white, 0 0 0 4px $primary-green;
       border-color: transparent;
     }
   }

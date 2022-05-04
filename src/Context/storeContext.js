@@ -8,63 +8,33 @@ export const StoreConsumer = StoreContext.Consumer;
 export class StoreProvider extends React.Component {
   // initial state
   state = {
-    category: {
-      type: null,
-      active: null,
-    },
+    categories: [],
+    cachedCategory: [],
     currency: null,
-    activeProducts: null,
     cart: {
       items: [],
       totalItems: 0,
     },
   };
 
-  // to update store after data is fetched
-  updateState = ({ currencies, categories }, cart, active) => {
-    let activeCurrency;
-    if (active) {
-      activeCurrency = active;
-    } else {
-      activeCurrency = currencies[0];
-    }
-
-    const activeCategory = categories[0];
-    if (!cart) {
-      cart = {
-        items: [],
-        totalItems: 0,
-      };
-    }
-
+  // to update store when app is initialized
+  updateCategories = ({ categories, currencies }) => {
+    const activeCurrency = currencies[0];
     this.setState({
-      category: {
-        type: categories,
-        active: activeCategory,
-      },
-      currency: {
-        type: currencies,
-        active: activeCurrency,
-      },
-      cart,
+      categories,
+      currency: { type: currencies, active: activeCurrency },
     });
   };
 
-  // to get product of particular category
-  getProductsByCategory = (category) => {
-    const res = this.state.category.type.filter(
-      (cat) => cat.name === category
-    )[0];
-    return res.products;
+  cacheCategory = (category) => {
+    this.state.cachedCategory.push(category);
   };
 
-  // to get product by id
-  getProduct = (id) => {
-    const { products } = this.state.category.type.filter(
-      (cat) => cat.name === "all"
-    )[0];
-    return products.filter((pro) => pro.id === id)[0];
-  };
+  getCategory = (name)=>{
+    const category = this.state.cachedCategory.find(cat=>cat.name===name)
+    return category
+  }
+
 
   // to chagne the active currency
   changeCurrency = (label) => {
@@ -76,18 +46,10 @@ export class StoreProvider extends React.Component {
     });
   };
 
-  // to change category
-  changeCategory = (name) => {
-    const { category } = this.state;
-    if (category.active.name === name) return;
-    const active = category.type.filter((cat) => cat.name === name)[0];
-    this.setState({ category: { ...category, active } });
-  };
-
   // ********************** cart functionality **************
 
   // grab products available in the cart
-  productsInCart = () => {
+  productsInCart2 = () => {
     const { cart, category } = this.state;
     const { items } = cart;
     const { products } = category.type.find((cat) => cat.name === "all");
@@ -156,6 +118,10 @@ export class StoreProvider extends React.Component {
     return productInCart;
   };
 
+  productsInCart = ()=>{
+
+  }
+
   // updating localstorage after adding items to cart
   updateLocalStorage = () => {
     localStorage.setItem("cart", JSON.stringify(this.state.cart));
@@ -208,18 +174,18 @@ export class StoreProvider extends React.Component {
   };
 
   render() {
-    const { category, currency, cart } = this.state;
-    // sharing store properties and methods 
+    const { categories, currency, cart } = this.state;
+    // sharing store properties and methods
     const store = {
       currency,
-      category,
+      categories,
       cart,
 
-      getProductsByCategory: this.getProductsByCategory,
-      getProduct: this.getProduct,
-      updateState: this.updateState,
+      cacheCategory: this.cacheCategory,
+      getCategory: this.getCategory,
+      updateCategories: this.updateCategories,
+
       changeCurrency: this.changeCurrency,
-      changeCategory: this.changeCategory,
 
       productsInCart: this.productsInCart,
       addToCart: this.addToCart,
