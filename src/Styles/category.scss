@@ -30,6 +30,7 @@
         a{
           position: absolute;
           inset: 0;
+          z-index: 2;
         }
 
         &:hover {
@@ -59,6 +60,7 @@
 
           button {
             position: absolute;
+            z-index:3 ;
             bottom: -0.5rem;
             right: 1rem;
             @include flex;

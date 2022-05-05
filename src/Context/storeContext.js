@@ -9,32 +9,33 @@ export class StoreProvider extends React.Component {
   // initial state
   state = {
     categories: [],
-    cachedCategory: [],
+    cacheProducts: [],
     currency: null,
     cart: {
       items: [],
       totalItems: 0,
+      needsUpdate: false,
     },
   };
 
   // to update store when app is initialized
-  updateCategories = ({ categories, currencies }) => {
-    const activeCurrency = currencies[0];
+  updateCart = (cart) => {
+    if (cart) {
+      this.setState({ cart: { ...cart, needsUpdate: false } });
+    }
+  };
+
+  updateCategories = ({ categories, currencies }, activeCurrency) => {
+    let active = currencies[0];
+
+    if (activeCurrency) {
+      active = activeCurrency;
+    }
     this.setState({
       categories,
-      currency: { type: currencies, active: activeCurrency },
+      currency: { type: currencies, active: active },
     });
   };
-
-  cacheCategory = (category) => {
-    this.state.cachedCategory.push(category);
-  };
-
-  getCategory = (name)=>{
-    const category = this.state.cachedCategory.find(cat=>cat.name===name)
-    return category
-  }
-
 
   // to chagne the active currency
   changeCurrency = (label) => {
@@ -46,150 +47,143 @@ export class StoreProvider extends React.Component {
     });
   };
 
-  // ********************** cart functionality **************
-
-  // grab products available in the cart
-  productsInCart2 = () => {
-    const { cart, category } = this.state;
-    const { items } = cart;
-    const { products } = category.type.find((cat) => cat.name === "all");
-    const productInCart = [];
-    items.forEach((item) => {
-      const product = products.filter((pro) => pro.id === item.id)[0];
-      if (item.attribute.length > 0) {
-        const found = [];
-        for (let i = 0; i < productInCart.length; i++) {
-          const pro = productInCart[i];
-
-          if (pro.id === product.id) {
-            let _found = true;
-            pro.selected.forEach((p, idx) => {
-              if (p !== item.attribute[idx]) {
-                _found = false;
-                return;
-              }
-            });
-            if (_found) {
-              found.push(pro);
-            }
-          }
-        }
-
-        if (found.length === 0) {
-          let quantity = 0;
-          items.forEach((val) => {
-            if (val.id === item.id) {
-              let _found = false;
-
-              val.attribute.forEach((v, idx) => {
-                if (v === item.attribute[idx]) {
-                  _found = true;
-                } else {
-                  _found = false;
-                }
-              });
-
-              if (_found) {
-                quantity++;
-              }
-            }
-          });
-
-          productInCart.push({
-            ...product,
-            selected: item.attribute,
-            quantity,
-          });
-        }
-      } else {
-        const found = productInCart.filter((i) => i.id === product.id);
-
-        if (found.length === 0) {
-          const quantity = items.filter((i) => i.id === product.id).length;
-
-          productInCart.push({
-            ...product,
-            selected: item.attribute,
-            quantity,
-          });
-        }
-      }
-    });
-    return productInCart;
-  };
-
-  productsInCart = ()=>{
-
-  }
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // -------------------------------- cart functionality ------------------------------- //
+  /////////////////////////////////////////////////////////////////////////////////////////
 
   // updating localstorage after adding items to cart
   updateLocalStorage = () => {
     localStorage.setItem("cart", JSON.stringify(this.state.cart));
   };
 
-  // to add item to cart
-  addToCart = (id, attribute) => {
+  // find index of product in cart
+  findIndex = (id, attribute) => {
     const { cart } = this.state;
+
+    let matched = -1;
+
+    for (let i = 0; i < cart.items.length; i++) {
+      const item = cart.items[i];
+      if (item.id === id) {
+        for (const [key, value] of Object.entries(attribute)) {
+          if (item.attribute[key] !== value) {
+            matched = -1;
+            break;
+          } else {
+            matched = i;
+          }
+        }
+      }
+      if (matched !== -1) {
+        break;
+      }
+      matched = -1;
+    }
+
+    return matched;
+  };
+
+  // increase/ decrease quantity of item from cart
+  alterQuantity = (index, increaseBy) => {
+    const { cart } = this.state;
+    const updatedItems = cart.items.map((item, idx) => {
+      if (idx === index)
+        return { ...item, quantity: item.quantity + increaseBy };
+
+      return item;
+    });
+
     this.setState(
       {
         cart: {
-          items: [...cart.items, { id, attribute }],
-          totalItems: cart.totalItems + 1,
+          items: updatedItems,
+          totalItems: cart.totalItems + increaseBy,
+          needsUpdate: true,
         },
       },
       this.updateLocalStorage
     );
   };
 
-  // to remote item from cart
-  removeFromCart = (id, attribute) => {
+  // to add item to cart
+  addToCart = (id, attribute) => {
     const { cart } = this.state;
-    const items = [...cart.items];
-    let index = -1;
 
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.id === id) {
-        let _found = true;
-        item.attribute.forEach((attr, idx) => {
-          if (attr !== attribute[idx]) {
-            _found = false;
-            return;
-          }
-        });
-        if (_found) {
-          index = i;
-          break;
-        }
-      }
+    let index;
+    if (Object.keys(attribute).length === 0) {
+      index = cart.items.findIndex((item) => item.id === id);
+    } else {
+      index = this.findIndex(id, attribute);
     }
 
-    if (index > -1) {
-      items.splice(index, 1);
+    // increasing the quantity if item is already in the cart
+    if (index !== -1) {
+      this.alterQuantity(index, 1);
+    } else {
+      // adding new item to cart
       this.setState(
-        { cart: { items, totalItems: cart.totalItems - 1 } },
+        {
+          cart: {
+            items: [...cart.items, { id, attribute, quantity: 1 }],
+            totalItems: cart.totalItems + 1,
+            needsUpdate: true,
+          },
+        },
         this.updateLocalStorage
       );
     }
   };
 
+  // to remote item from cart
+  removeFromCart = (id, attribute) => {
+    const { cart } = this.state;
+
+    let index;
+    if (Object.keys(attribute).length === 0) {
+      index = cart.items.findIndex((item) => item.id === id);
+    } else {
+      index = this.findIndex(id, attribute);
+    }
+
+    if (index > -1) {
+      const items = [...cart.items];
+
+      const quantity = items[index].quantity;
+      if (quantity === 1) {
+        items.splice(index, 1);
+        this.setState(
+          {
+            cart: { items, totalItems: cart.totalItems - 1, needsUpdate: true },
+          },
+          this.updateLocalStorage
+        );
+      } else {
+        this.alterQuantity(index, -1);
+      }
+    }
+  };
+
+  cartUpdated = () => {
+    this.setState({ cart: { ...this.state.cart, needsUpdate: false } });
+  };
+
   render() {
     const { categories, currency, cart } = this.state;
+
     // sharing store properties and methods
     const store = {
       currency,
       categories,
       cart,
 
-      cacheCategory: this.cacheCategory,
-      getCategory: this.getCategory,
+      updateCart: this.updateCart,
       updateCategories: this.updateCategories,
 
       changeCurrency: this.changeCurrency,
 
-      productsInCart: this.productsInCart,
       addToCart: this.addToCart,
       removeFromCart: this.removeFromCart,
+      cartUpdated: this.cartUpdated,
     };
     return (
       <StoreContext.Provider value={store}>

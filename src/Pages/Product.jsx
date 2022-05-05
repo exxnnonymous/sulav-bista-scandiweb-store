@@ -4,6 +4,7 @@ import { sortAttributes, withRouter } from "Lib/utils";
 import StoreContext from "Context/storeContext";
 
 import Attribute from "Components/ProductAttribute";
+import ServerError from "Components/ServerError"
 import Price from "Components/Price";
 import LazyImg from "Components/LazyImg";
 import 'Styles/product.scss'
@@ -20,19 +21,24 @@ class Product extends React.Component {
         document.title = "Scandiweb Store"
         this.formRef = React.createRef();
         this.state = {
-            product: null
+            product: null,
+            error: false
         }
     }
 
     async componentDidMount() {
-        const { id } = this.props.params
-        const { data } = await client.query({
-            query: productQuery,
-            variables: {
-                id: id
-            }
-        })
-        this.setState({ product: data.product })
+        try {
+            const { id } = this.props.params
+            const { data } = await client.query({
+                query: productQuery,
+                variables: {
+                    id: id
+                }
+            })
+            this.setState({ product: data.product })
+        } catch (err) {
+            this.setState({ error: true })
+        }
     }
 
     // to add item to cart
@@ -45,7 +51,7 @@ class Product extends React.Component {
 
     render() {
 
-
+        if (this.state.error) return < ServerError />
         if (!this.state.product) return <div>Loading...</div>
         const { currency } = this.context;
 

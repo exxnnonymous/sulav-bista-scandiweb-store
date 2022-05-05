@@ -1,12 +1,11 @@
 import React from "react";
 import { createPortal } from "react-dom";
-import { sortAttributes } from "Lib/utils";
+import { sortAttributes, totalPrice, updateCart } from "Lib/utils";
 import { Minus, Plus } from "Assets/Icons";
 import StoreContext from "Context/storeContext";
 import Price from "Components/Price";
 import { Attribute } from "Pages/Cart";
 import { Link } from "react-router-dom";
-import TotalPrice from "./TotalPrice";
 import "Styles/cartOverlay.scss"
 
 const cartRoot = document.getElementById("cart-overlay");
@@ -17,22 +16,40 @@ export default class CartOverlay extends React.Component {
     constructor(props) {
         super(props);
         this.element = document.createElement("div");
+        this.state = {
+            products: null,
+            error: false,
+        }
+
     }
-    componentDidMount() {
+
+
+
+    async componentDidMount() {
         cartRoot.appendChild(this.element);
+        await updateCart.bind(this)()
     }
+    async componentDidUpdate() {
+        const { cart } = this.context
+        if (cart.needsUpdate) {
+            await updateCart.bind(this)()
+        }
+    }
+
     componentWillUnmount() {
         cartRoot.removeChild(this.element);
+
     }
 
 
     render() {
         const { open } = this.props;
         const { cart } = this.context
+        const { error, products } = this.state
         return createPortal(
             <div className={`cart__overlay ${open ? "open" : ""}`}>
                 <div className="container">
-                    <CartBox totalItems={cart.totalItems} />
+                    <CartBox totalItems={cart.totalItems} error={error} products={products} />
                 </div>
             </div>, this.element)
     }
@@ -42,9 +59,15 @@ export default class CartOverlay extends React.Component {
 class CartBox extends React.Component {
     static contextType = StoreContext
     render() {
-        const { totalItems } = this.props
-        const { productsInCart, currency, removeFromCart, addToCart } = this.context
-        const products = productsInCart();
+        const { totalItems, products, error } = this.props
+
+        if (error) return <div>Error...</div>
+        const { currency, removeFromCart, addToCart } = this.context
+
+        if (!products) return <div>Loading...</div>
+
+        const total = totalPrice(products, currency.active)
+
         return (
             <div className="cart__box bg-white" >
                 <h3>My Bag, <span>{totalItems} items</span></h3>
@@ -54,14 +77,16 @@ class CartBox extends React.Component {
                     (<>
                         <div className="cart__items">
                             {products.map((pro, idx) => (
-                                <CartItems key={pro.id + idx} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
+                                <CartItems key={"cart--overlay--" + pro.id + idx} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
                             ))}
                         </div>
 
                         <div className="cart__total">
                             <div className="total">
                                 <span>Total</span>
-                                <TotalPrice products={products} currency={currency.active} />
+                                <span>
+                                    {currency.active.symbol} {total.toFixed(2)}
+                                </span>
                             </div>
                             <div className="cart__links">
                                 <Link to="/cart">View Bag</Link>
@@ -77,7 +102,7 @@ class CartBox extends React.Component {
 }
 class CartItems extends React.Component {
     render() {
-        const { brand, name, prices, currency, gallery, attributes, removeFromCart, id, selected, quantity, addToCart } = this.props
+        const { brand, name, prices, currency, gallery, attributes, removeFromCart, id, selectedAttribute, quantity, addToCart } = this.props
         const sortedAttr = sortAttributes(attributes)
         return (
             <div className="cart__item">
@@ -86,14 +111,14 @@ class CartItems extends React.Component {
                         <h2>{brand}</h2>
                         <h1>{name}</h1>
                         <Price currency={currency.active} prices={prices} />
-                        <Attribute sortedAttr={sortedAttr} selected={selected} />
+                        <Attribute sortedAttr={sortedAttr} selected={selectedAttribute} />
                     </div>
                     <div className="product__action">
-                        <button onClick={() => { addToCart(id, selected) }}>
+                        <button onClick={() => { addToCart(id, selectedAttribute); }}>
                             <Plus />
                         </button>
                         <span>{quantity}</span>
-                        <button onClick={() => { removeFromCart(id, selected) }}>
+                        <button onClick={() => { removeFromCart(id, selectedAttribute); }}>
                             <Minus />
                         </button>
                     </div>

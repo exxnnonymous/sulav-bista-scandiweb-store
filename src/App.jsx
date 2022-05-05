@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import StoreContext from "Context/storeContext";
-import { categoriesQuery, storeQuery } from "Apollo/queries";
+import { categoriesQuery } from "Apollo/queries";
 import client from "Apollo/apolloClient";
 import Category from "Pages/Category";
 import Product from "Pages/Product";
@@ -25,13 +25,14 @@ class App extends React.Component {
   // grabbing initial data
   getData = async () => {
     this.setState({ loading: true });
-    const { updateCategories } = this.context;
+    const { updateCategories, updateCart } = this.context;
 
     try {
       const { data } = await client.query({ query: categoriesQuery });
-      // const cart = JSON.parse(localStorage.getItem('cart'))
-      // const activeCurrency = JSON.parse(localStorage.getItem('active-currency'))
-      updateCategories(data);
+      const cart = JSON.parse(localStorage.getItem('cart'))
+      const activeCurrency = JSON.parse(localStorage.getItem('active-currency'))
+      updateCategories(data, activeCurrency);
+      updateCart(cart)
       this.setState({ loading: false })
 
       // starting final loading animation
@@ -74,8 +75,8 @@ class App extends React.Component {
       return (
         <>
           <Routes>
-            <Route path="/" exact element={<Home />} />
-            <Route path="category/:category" exact element={<Category />} />
+            <Route path='/' element={<Category />} />
+            <Route path='/:category' element={<Category />} />
             <Route path="/cart" exact element={<CartPage />} />
             <Route path="products/:id" exact element={<Product />} />
             <Route path="checkout" exact element={<Checkout />} />

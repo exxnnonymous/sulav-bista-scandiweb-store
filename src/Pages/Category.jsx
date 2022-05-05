@@ -2,6 +2,7 @@ import React from "react";
 import StoreContext from "Context/storeContext";
 
 import ProductItem from "Components/ProductItem";
+import ServerError from "Components/ServerError"
 import "Styles/category.scss"
 import withHeader from "Layout/HeaderHoc";
 import { withRouter } from "Lib/utils";
@@ -18,30 +19,18 @@ class Category extends React.Component {
             error: false,
 
         }
-        const { category } = this.props.params
-        document.title = `${category[0].toUpperCase() + category.substring(1)} - Scandiweb Store`
+        document.title = `Scandiweb Store`
     }
 
     fetchCategory = async (category) => {
         try {
-
-            const { getCategory, cacheCategory } = this.context
-
-            const cachedData = getCategory(category)
-            if (cachedData) {
-                this.setState({ data: cachedData })
-                return
-            }
-
             const { data } = await client.query({
                 query: categoryQuery,
                 variables: {
                     title: category
-
                 }
             })
             this.setState({ data: data.category })
-            cacheCategory(data.category)
 
         } catch (err) {
             this.setState({ error: true })
@@ -52,7 +41,7 @@ class Category extends React.Component {
 
     async componentDidMount() {
         const { category } = this.props.params
-        await this.fetchCategory(category)
+        await this.fetchCategory(category || "all")
 
     }
 
@@ -60,8 +49,8 @@ class Category extends React.Component {
         const { category } = this.props.params
         const { data } = this.state
 
-        if (data && data.name !== category) {
-            await this.fetchCategory(category)
+        if (data && data.name !== (category || "all")) {
+            await this.fetchCategory(category || "all")
         }
     }
 
@@ -69,7 +58,7 @@ class Category extends React.Component {
 
     render() {
 
-        if (this.state.error) return <div>Error...</div>
+        if (this.state.error) return <ServerError />
         if (!this.state.data) return <div>Loading...</div>
         const { currency, addToCart } = this.context;
         const { name, products } = this.state.data

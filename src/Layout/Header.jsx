@@ -73,7 +73,7 @@ class Header extends React.Component {
         <div className="container">
           <nav>
             {categories.map((cat) => (
-              <NavLink key={cat.name} to={`/category/${cat.name}`} className={(navData) => (navData.isActive ? 'link-active' : '')} >{cat.name}</NavLink>
+              <NavLink key={cat.name} to={cat.name === "all" ? "/" :`/${cat.name}`} className={(navData) => (navData.isActive ? 'link-active' : '')} >{cat.name}</NavLink>
             ))}
           </nav>
 
@@ -98,9 +98,9 @@ class Header extends React.Component {
                 <PriceDropdown currencies={currency.type} changeCurrency={changeCurrency} closeDropdown={this.closeDropdown} />
               </div>
             </button>
-            {/* <Cart total={cart.totalItems} handleCart={this.handleCart} /> */}
+            <Cart total={cart.totalItems} handleCart={this.handleCart} />
           </div>
-          {/* <CartOverlay open={this.state.showCart} /> */}
+          <CartOverlay open={this.state.showCart}  />
         </div>
       </header>
     );

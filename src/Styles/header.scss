@@ -28,7 +28,7 @@ header {
 
         text-transform: uppercase;
         font-size: $text-md;
-
+        font-weight: 500;
         transition: color 200ms ease-in,opacity 200ms ;
 
         &:hover{

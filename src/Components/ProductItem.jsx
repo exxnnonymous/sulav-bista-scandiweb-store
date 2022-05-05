@@ -9,9 +9,14 @@ import { CartIcon } from "Assets/Icons";
 export default class ProductItem extends React.Component {
 
     render() {
-        const { currency, product } = this.props
-        const { name, gallery, prices, id, inStock } = product;
-        console.log(product)
+        const { currency, product, addToCart } = this.props
+        const { name, gallery, prices, id, inStock, brand, attributes } = product;
+
+        const defaultAttribute = {}
+        attributes.forEach(attribute => {
+            defaultAttribute[attribute.id] = attribute.items[0].id
+        })
+
         return (
             <div className="product__item" >
                 <Link to={`/products/${id}`}></Link>
@@ -21,13 +26,13 @@ export default class ProductItem extends React.Component {
                     </div>}
                     <LazyImg src={gallery[0]} alt={name} />
                     {inStock &&
-                        <button href="/product" onClick={() => { console.log("fdsfasdf") }}>
+                        <button href="/product" onClick={() => { addToCart(id, defaultAttribute) }}>
                             <CartIcon />
                         </button>
                     }
                 </div>
                 <div className="product__info" >
-                    <h4>{name}</h4>
+                    <h4>{brand} {name}</h4>
                     <Price currency={currency} prices={prices} />
                 </div>
             </div>

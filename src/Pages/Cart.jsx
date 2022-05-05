@@ -1,12 +1,12 @@
 import { Minus, Plus } from "Assets/Icons";
 import Price from "Components/Price";
-import TotalPrice from "Components/TotalPrice";
 import StoreContext from "Context/storeContext";
 import withHeader from "Layout/HeaderHoc";
-import { sortAttributes } from "Lib/utils";
+import { sortAttributes, totalPrice, updateCart } from "Lib/utils";
 import React from "react";
 import { Link } from "react-router-dom";
 import "Styles/cart.scss"
+import ServerError from "Components/ServerError";
 
 
 // cart page
@@ -14,37 +14,63 @@ class CartPage extends React.Component {
     static contextType = StoreContext;
     constructor() {
         super();
-        document.title = "Cart - Scandiweb Store"
+        document.title = "Cart - Scandiweb Store";
+        this.state = {
+            products: null,
+            error: false,
+        }
     }
+
+
+    async componentDidMount() {
+        await updateCart.bind(this)()
+    }
+
+    async componentDidUpdate() {
+        if (this.context.cart.needsUpdate) {
+            await updateCart.bind(this)()
+        }
+    }
+
     handleLink = (e) => {
         if (this.context.cart.totalItems === 0) {
             e.preventDefault()
         }
     }
+
     render() {
-        const { productsInCart, currency, removeFromCart, addToCart, cart } = this.context
-        const products = productsInCart();
-        return (<main className="cart__page page">
-            <div className="container">
-                <h1 className="uppercase">Cart</h1>
-                <div className="cart__items">
-                    {products.length === 0 ? <div className="cart--empty">Cart is empty...</div> :
-                        products.map((pro, idx) => (
-                            <CartProduct key={pro.id + idx} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
-                        ))
-                    }
-                </div>
-                <div className="cart__total">
-                    <div className="quantity">
-                        Qty: <span>{cart.totalItems}</span>
+
+        if (this.state.error) return <ServerError />
+        const { currency, removeFromCart, addToCart, cart } = this.context
+
+
+        if (!this.state.products) return <div>Loading...</div>
+        const { products } = this.state
+        const total = totalPrice(products, currency.active)
+        const tax = (21 * total) / 100
+
+        return (
+
+            <main className="cart__page page">
+                <div className="container">
+                    <h1 className="uppercase">Cart</h1>
+                    <div className="cart__items">
+                        {products.length === 0 ? <div className="cart--empty">Cart is empty...</div> :
+                            products.map((pro) => (
+                                <CartProduct key={pro.id + pro.selectedAttribute.toString()} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
+                            ))
+                        }
                     </div>
-                    <div className="total">
-                        Total: <TotalPrice products={products} currency={currency.active} />
+                    <div className="cart__total">
+                        Tax 21%:  <span>{currency.active.symbol} {tax.toFixed(2)}</span>
+                        Quantity: <span>{cart.totalItems}</span>
+                        Total: <span>
+                            {currency.active.symbol} {total.toFixed(2)}
+                        </span>
                     </div>
                     <Link to="/checkout" onClick={this.handleLink} className={cart.totalItems === 0 ? "btn-disabled" : ""} >Order</Link>
                 </div>
-            </div>
-        </main>);
+            </main>);
     }
 }
 
@@ -55,7 +81,7 @@ export default withHeader(CartPage);
 class CartProduct extends React.Component {
 
     render() {
-        const { brand, name, prices, currency, gallery, attributes, removeFromCart, id, selected, quantity, addToCart } = this.props
+        const { brand, name, prices, currency, gallery, attributes, removeFromCart, id, selectedAttribute, quantity, addToCart } = this.props
         const sortedAttr = sortAttributes(attributes)
         return (
 
@@ -65,14 +91,14 @@ class CartProduct extends React.Component {
                         <h2>{brand}</h2>
                         <h1>{name}</h1>
                         <Price currency={currency.active} prices={prices} />
-                        <Attribute sortedAttr={sortedAttr} selected={selected} />
+                        <Attribute sortedAttr={sortedAttr} selected={selectedAttribute} />
                     </div>
                     <div className="cart__action">
-                        <button onClick={() => { addToCart(id, selected) }}>
+                        <button onClick={() => { addToCart(id, selectedAttribute) }}>
                             <Plus />
                         </button>
                         <span>{quantity}</span>
-                        <button onClick={() => { removeFromCart(id, selected) }}>
+                        <button onClick={() => { removeFromCart(id, selectedAttribute) }}>
                             <Minus />
                         </button>
                     </div>
@@ -92,9 +118,9 @@ export class Attribute extends React.Component {
         const { sortedAttr, selected } = this.props
         return (
             <div className="product__attributes">
-                {sortedAttr.map((attr, id) => {
+                {sortedAttr.map((attribute) => {
                     return (
-                        <AttributeItem key={attr.id} {...attr} selected={selected[id]} />
+                        <AttributeItem key={attribute.id} {...attribute} selected={selected[attribute.id]} />
                     )
                 })}
             </div>
