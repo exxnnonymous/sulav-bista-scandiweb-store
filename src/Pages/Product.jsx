@@ -11,18 +11,20 @@ import 'Styles/product.scss'
 import withHeader from "Layout/HeaderHoc";
 import client from "Apollo/apolloClient";
 import { productQuery } from "Apollo/queries";
+import Spinner from "Components/spinner";
 
 
 // single product component
 class Product extends React.Component {
     static contextType = StoreContext;
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         document.title = "Scandiweb Store"
-        this.formRef = React.createRef();
+
         this.state = {
             product: null,
-            error: false
+            error: false,
+            attributeState: {}
         }
     }
 
@@ -35,7 +37,14 @@ class Product extends React.Component {
                     id: id
                 }
             })
-            this.setState({ product: data.product })
+
+            const attributeState = {}
+
+            data.product.attributes.forEach(attr => {
+                attributeState[attr.id] = attr.items[0].id
+            })
+
+            this.setState({ product: data.product, attributeState })
         } catch (err) {
             this.setState({ error: true })
         }
@@ -44,21 +53,28 @@ class Product extends React.Component {
     // to add item to cart
     cartAddHandle = (id) => {
         // grabbing values of radio button from the form
-        const values = []
-        Array.from(this.formRef.current).forEach(item => { if (item.checked) { values.push(item.value) } })
-        this.context.addToCart(id, values)
+        this.context.addToCart(id, this.state.attributeState)
+    }
+
+    handleAttribute = (name, value) => {
+        this.setState({
+            attributeState: {
+                ...this.state.attributeState,
+                [name]: value
+            }
+        })
     }
 
     render() {
 
         if (this.state.error) return < ServerError />
-        if (!this.state.product) return <div>Loading...</div>
+        if (!this.state.product) return <Spinner />
+        
         const { currency } = this.context;
-
+        const { attributeState } = this.state
 
         const { name, gallery, brand, attributes, prices, description, id, inStock } = this.state.product
         const sortedAttr = sortAttributes(attributes)
-
 
         return (
             <main className="product--page page">
@@ -67,10 +83,10 @@ class Product extends React.Component {
                     <div className="product__info">
                         <h2>{brand}</h2>
                         <h1>{name}</h1>
-                        <form className="product__attributes" ref={this.formRef} >
+                        <form className="product__attributes" >
 
                             {sortedAttr.map(attr => (
-                                <Attribute key={attr.id} {...attr} />
+                                <Attribute key={attr.id} {...attr} handleAttribute={this.handleAttribute} attributeState={attributeState} />
                             ))}
                         </form>
                         <div className="product__price">

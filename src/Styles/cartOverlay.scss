@@ -17,12 +17,37 @@
   }
 
   .cart__box {
-    width: 350px;
+    width: 410px;
     max-height: calc(100vh - 100px);
     margin-left: auto;
     padding: 32px 16px;
     padding-right: 10px;
     @include grid;
+
+    .cart-error {
+      margin-top: 5px;
+      font-size: 1.5rem;
+      color: red;
+      background-color: rgba(255, 0, 0, 0.2);
+      border-radius: 5px;
+      text-align: center;
+      font-weight: 500;
+      padding: 5px 20px;
+      margin-inline: auto;
+      border: 1px solid red;
+    }
+    .cart-spinner {
+      position: relative;
+      min-height: 100px;
+    }
+
+    .cart-empty {
+      text-align: center;
+      font-weight: 500;
+      padding: 5px 20px;
+      font-size: 1.5rem;
+      margin-inline: auto;
+    }
 
     h3 {
       font-size: 1rem;
@@ -47,7 +72,8 @@
         padding-bottom: 1rem;
 
         .product {
-          @include flex(space-between);
+          @include flex(space-between, flex-start);
+          height: 100%;
           position: relative;
 
           .product__description {
@@ -78,14 +104,22 @@
                 padding-left: 5px;
                 .attr__group {
                   width: 20px;
+                  border: 1px solid $secondary-black;
+                  &.attr__selected {
+                    border: none;
+                  }
                 }
               }
 
               .product__attribute-text {
+                gap: 8px;
                 .attr__group {
-                  width: 27px;
-                  height: 27px;
+                  min-width: 35px;
+                  width: fit-content;
+                  height: 32px;
+                  padding-inline: 2px;
                   font-size: 12px;
+                  font-weight: 500;
                 }
               }
             }
@@ -136,19 +170,19 @@
         }
       }
       .cart__links {
-        a {
+        a,
+        button {
           text-transform: uppercase;
           padding: 13px 25px;
           border: 1px solid #1d1f22;
           font-weight: 600;
           font-size: 1rem;
-
-          &:nth-of-type(2) {
-            @include btn-color;
-            transition: background-color 200ms;
-            &:hover {
-              background-color: $light-green;
-            }
+        }
+        button {
+          @include btn-color;
+          transition: background-color 200ms;
+          &:hover {
+            background-color: $light-green;
           }
         }
       }

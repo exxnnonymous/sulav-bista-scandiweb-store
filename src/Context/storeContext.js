@@ -9,7 +9,6 @@ export class StoreProvider extends React.Component {
   // initial state
   state = {
     categories: [],
-    cacheProducts: [],
     currency: null,
     cart: {
       items: [],
@@ -167,6 +166,18 @@ export class StoreProvider extends React.Component {
     this.setState({ cart: { ...this.state.cart, needsUpdate: false } });
   };
 
+  emptyCart = () => {
+    this.setState({
+      cart: {
+        items: [],
+        totalItems: 0,
+        needsUpdate: true,
+      },
+    }, ()=>{
+      localStorage.removeItem('cart')
+    });
+  };
+
   render() {
     const { categories, currency, cart } = this.state;
 
@@ -184,6 +195,7 @@ export class StoreProvider extends React.Component {
       addToCart: this.addToCart,
       removeFromCart: this.removeFromCart,
       cartUpdated: this.cartUpdated,
+      emptyCart: this.emptyCart,
     };
     return (
       <StoreContext.Provider value={store}>

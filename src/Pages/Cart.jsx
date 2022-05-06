@@ -7,6 +7,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "Styles/cart.scss"
 import ServerError from "Components/ServerError";
+import Spinner from "Components/spinner";
 
 
 // cart page
@@ -32,9 +33,11 @@ class CartPage extends React.Component {
         }
     }
 
-    handleLink = (e) => {
-        if (this.context.cart.totalItems === 0) {
-            e.preventDefault()
+    handleOrder = ()  => {
+        const { emptyCart, cart } = this.context
+        if (cart.totalItems > 0) {
+            emptyCart();
+            alert("🎉 Your order is in the way!")
         }
     }
 
@@ -44,7 +47,7 @@ class CartPage extends React.Component {
         const { currency, removeFromCart, addToCart, cart } = this.context
 
 
-        if (!this.state.products) return <div>Loading...</div>
+        if (!this.state.products) return <Spinner />
         const { products } = this.state
         const total = totalPrice(products, currency.active)
         const tax = (21 * total) / 100
@@ -57,7 +60,7 @@ class CartPage extends React.Component {
                     <div className="cart__items">
                         {products.length === 0 ? <div className="cart--empty">Cart is empty...</div> :
                             products.map((pro) => (
-                                <CartProduct key={pro.id + pro.selectedAttribute.toString()} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
+                                <CartProduct key={pro.id + JSON.stringify(pro.selectedAttribute)} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
                             ))
                         }
                     </div>
@@ -68,7 +71,7 @@ class CartPage extends React.Component {
                             {currency.active.symbol} {total.toFixed(2)}
                         </span>
                     </div>
-                    <Link to="/checkout" onClick={this.handleLink} className={cart.totalItems === 0 ? "btn-disabled" : ""} >Order</Link>
+                    <button onClick={this.handleOrder} className={cart.totalItems === 0 ? "btn-disabled" : ""} >Order</button>
                 </div>
             </main>);
     }

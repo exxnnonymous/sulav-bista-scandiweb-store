@@ -8,6 +8,7 @@ import withHeader from "Layout/HeaderHoc";
 import { withRouter } from "Lib/utils";
 import client from "Apollo/apolloClient";
 import { categoryQuery } from "Apollo/queries"
+import Spinner from "Components/spinner";
 
 class Category extends React.Component {
     static contextType = StoreContext;
@@ -59,7 +60,7 @@ class Category extends React.Component {
     render() {
 
         if (this.state.error) return <ServerError />
-        if (!this.state.data) return <div>Loading...</div>
+        if (!this.state.data) return <Spinner />
         const { currency, addToCart } = this.context;
         const { name, products } = this.state.data
         return (

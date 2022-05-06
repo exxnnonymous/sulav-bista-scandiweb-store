@@ -7,6 +7,7 @@ import Price from "Components/Price";
 import { Attribute } from "Pages/Cart";
 import { Link } from "react-router-dom";
 import "Styles/cartOverlay.scss"
+import Spinner from "./spinner";
 
 const cartRoot = document.getElementById("cart-overlay");
 
@@ -41,6 +42,15 @@ export default class CartOverlay extends React.Component {
 
     }
 
+    handleCheckout = () => {
+        const { emptyCart, cart } = this.context
+        if (cart.totalItems > 0) {
+            emptyCart();
+            alert("🎉 Your order is in the way!")
+
+        }
+    }
+
 
     render() {
         const { open } = this.props;
@@ -49,7 +59,11 @@ export default class CartOverlay extends React.Component {
         return createPortal(
             <div className={`cart__overlay ${open ? "open" : ""}`}>
                 <div className="container">
-                    <CartBox totalItems={cart.totalItems} error={error} products={products} />
+                    <div className="cart__box bg-white" >
+                        <h3>My Bag, <span>{cart.totalItems} items</span></h3>
+
+                        <CartBox error={error} products={products} handleCheckout={this.handleCheckout} />
+                    </div>
                 </div>
             </div>, this.element)
     }
@@ -59,25 +73,24 @@ export default class CartOverlay extends React.Component {
 class CartBox extends React.Component {
     static contextType = StoreContext
     render() {
-        const { totalItems, products, error } = this.props
+        const { products, error, handleCheckout } = this.props
 
-        if (error) return <div>Error...</div>
+        if (error) return <div className="cart-error">Internal Server Error!</div>
+        if (!products) return <div className="cart-spinner"><Spinner /></div>
+
         const { currency, removeFromCart, addToCart } = this.context
-
-        if (!products) return <div>Loading...</div>
 
         const total = totalPrice(products, currency.active)
 
         return (
-            <div className="cart__box bg-white" >
-                <h3>My Bag, <span>{totalItems} items</span></h3>
+            <>
 
 
-                {products.length === 0 ? <span className="cart--empty">Cart is empty...</span> :
+                {products.length === 0 ? <div className="cart-empty">Cart is empty...</div> :
                     (<>
                         <div className="cart__items">
-                            {products.map((pro, idx) => (
-                                <CartItems key={"cart--overlay--" + pro.id + idx} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
+                            {products.map(pro => (
+                                <CartItems key={"cart--overlay--" + pro.id + JSON.stringify(pro.selectedAttribute)} removeFromCart={removeFromCart} addToCart={addToCart} currency={currency} {...pro} />
                             ))}
                         </div>
 
@@ -90,13 +103,13 @@ class CartBox extends React.Component {
                             </div>
                             <div className="cart__links">
                                 <Link to="/cart">View Bag</Link>
-                                <Link to="/checkout" >Check out</Link>
+                                <button onClick={handleCheckout} >Check out</button>
                             </div>
                         </div>
                     </>)
                 }
 
-            </div >
+            </ >
         )
     }
 }
@@ -118,7 +131,17 @@ class CartItems extends React.Component {
                             <Plus />
                         </button>
                         <span>{quantity}</span>
-                        <button onClick={() => { removeFromCart(id, selectedAttribute); }}>
+                        <button onClick={() => {
+                            if (quantity === 1) {
+                                // to give priority to the document.body event listener
+                                setTimeout(() => {
+                                    removeFromCart(id, selectedAttribute)
+                                }, 10)
+
+                            } else {
+                                removeFromCart(id, selectedAttribute)
+                            }
+                        }}>
                             <Minus />
                         </button>
                     </div>

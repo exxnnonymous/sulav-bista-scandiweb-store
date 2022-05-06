@@ -11,11 +11,11 @@ class Header extends React.Component {
 
   static contextType = StoreContext;
 
-
   state = {
     showCart: false,
     showPrice: false
   }
+
 
   // handle category links
   handleLink = (changeCategory, name) => {
@@ -29,9 +29,9 @@ class Header extends React.Component {
   // handle cart menu
   handleCart = () => {
     if (!this.state.showCart) {
-      document.addEventListener("click", this.closeCart, false);
+      document.body.addEventListener("click", this.closeCart, false);
     } else {
-      document.removeEventListener("click", this.closeCart, false);
+      document.body.removeEventListener("click", this.closeCart, false);
     }
 
     this.setState(prevState => ({
