@@ -1,17 +1,16 @@
 import React from "react";
 import parse from "html-react-parser"
-import { sortAttributes, withRouter } from "Lib/utils";
 import StoreContext from "Context/storeContext";
-
 import Attribute from "Components/ProductAttribute";
 import ServerError from "Components/ServerError"
+import Spinner from "Components/spinner";
 import Price from "Components/Price";
 import LazyImg from "Components/LazyImg";
-import 'Styles/product.scss'
 import withHeader from "Layout/HeaderHoc";
+import { sortAttributes, withRouter } from "Lib/utils";
 import client from "Apollo/apolloClient";
 import { productQuery } from "Apollo/queries";
-import Spinner from "Components/spinner";
+import 'Styles/product.scss'
 
 
 // single product component
@@ -69,7 +68,7 @@ class Product extends React.Component {
 
         if (this.state.error) return < ServerError />
         if (!this.state.product) return <Spinner />
-        
+
         const { currency } = this.context;
         const { attributeState } = this.state
 

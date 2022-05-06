@@ -34,7 +34,6 @@
       .cart__item {
         display: grid;
         grid-template-columns: auto 150px;
-        align-items: center;
         gap: 1rem;
         padding-bottom: 1rem;
 
@@ -97,6 +96,7 @@
         .product__img {
           img {
             @include fit-image;
+            height: 100%;
           }
         }
       }

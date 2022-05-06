@@ -1,13 +1,13 @@
-import { Minus, Plus } from "Assets/Icons";
+import React from "react";
+import ServerError from "Components/ServerError";
 import Price from "Components/Price";
+import Spinner from "Components/spinner";
+import Slider from "Components/Slider";
+import { Minus, Plus } from "Assets/Icons";
 import StoreContext from "Context/storeContext";
 import withHeader from "Layout/HeaderHoc";
 import { sortAttributes, totalPrice, updateCart } from "Lib/utils";
-import React from "react";
-import { Link } from "react-router-dom";
 import "Styles/cart.scss"
-import ServerError from "Components/ServerError";
-import Spinner from "Components/spinner";
 
 
 // cart page
@@ -33,7 +33,7 @@ class CartPage extends React.Component {
         }
     }
 
-    handleOrder = ()  => {
+    handleOrder = () => {
         const { emptyCart, cart } = this.context
         if (cart.totalItems > 0) {
             emptyCart();
@@ -49,8 +49,9 @@ class CartPage extends React.Component {
 
         if (!this.state.products) return <Spinner />
         const { products } = this.state
-        const total = totalPrice(products, currency.active)
+        let total = totalPrice(products, currency.active)
         const tax = (21 * total) / 100
+        total = total + tax
 
         return (
 
@@ -107,7 +108,10 @@ class CartProduct extends React.Component {
                     </div>
                 </div>
                 <div className="product__img">
-                    <img src={gallery[0]} alt={name} />
+                    {
+                        gallery.length > 1 ?
+                            <Slider images={gallery} alt={name} /> : <img src={gallery[0]} alt={name} />
+                    }
                 </div>
             </div>
         )

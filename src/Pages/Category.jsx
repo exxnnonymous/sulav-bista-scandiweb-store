@@ -1,14 +1,13 @@
 import React from "react";
 import StoreContext from "Context/storeContext";
-
 import ProductItem from "Components/ProductItem";
 import ServerError from "Components/ServerError"
-import "Styles/category.scss"
+import Spinner from "Components/spinner";
 import withHeader from "Layout/HeaderHoc";
 import { withRouter } from "Lib/utils";
 import client from "Apollo/apolloClient";
 import { categoryQuery } from "Apollo/queries"
-import Spinner from "Components/spinner";
+import "Styles/category.scss"
 
 class Category extends React.Component {
     static contextType = StoreContext;

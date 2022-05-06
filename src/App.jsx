@@ -1,16 +1,15 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import StoreContext from "Context/storeContext";
-import { categoriesQuery } from "Apollo/queries";
-import client from "Apollo/apolloClient";
 import Category from "Pages/Category";
 import Product from "Pages/Product";
 import CartPage from "Pages/Cart";
+import Checkout from "Pages/Checkout";
 import Intro from "Components/Intro";
 import ServerError from "Components/ServerError";
-import Checkout from "Pages/Checkout";
+import StoreContext from "Context/storeContext";
+import { categoriesQuery } from "Apollo/queries";
+import client from "Apollo/apolloClient";
 import "Styles/app.scss";
-import Home from "Pages/Home";
 
 class App extends React.Component {
   static contextType = StoreContext;
@@ -25,25 +24,24 @@ class App extends React.Component {
   // grabbing initial data
   getData = async () => {
     this.setState({ loading: true });
-    const { updateCategories, updateCart } = this.context;
+    const { initialState, updateCart } = this.context;
 
     try {
       const { data } = await client.query({ query: categoriesQuery });
       const cart = JSON.parse(localStorage.getItem('cart'))
       const activeCurrency = JSON.parse(localStorage.getItem('active-currency'))
-      updateCategories(data, activeCurrency);
+      initialState(data, activeCurrency);
       updateCart(cart)
-      this.setState({ loading: false })
 
       // starting final loading animation
-      // setTimeout(() => {
-      //   this.setState({ loadingFinal: true }, () => {
-      //     // closing loading screen
-      //     setTimeout(() => {
-      //       this.setState({ loading: false })
-      //     }, 800)
-      //   });
-      // }, 1000)
+      setTimeout(() => {
+        this.setState({ loadingFinal: true }, () => {
+          // closing loading screen
+          setTimeout(() => {
+            this.setState({ loading: false })
+          }, 800)
+        });
+      }, 1000)
 
     } catch (err) {
       this.setState({ loading: false, error: true });

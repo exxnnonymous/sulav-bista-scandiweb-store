@@ -39,6 +39,7 @@ export const totalPrice = (products, currency) => {
   return totalPrice;
 };
 
+// fetch products in the cart
 export async function updateCart() {
   const { cartUpdated, cart } = this.context;
   try {

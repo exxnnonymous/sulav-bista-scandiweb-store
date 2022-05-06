@@ -67,13 +67,13 @@ class Header extends React.Component {
 
   render() {
     const { categories, currency, changeCurrency, cart } = this.context;
-    if(!categories && !currency)return ""
+    if (!categories && !currency) return ""
     return (
       <header>
         <div className="container">
           <nav>
             {categories.map((cat) => (
-              <NavLink key={cat.name} to={cat.name === "all" ? "/" :`/${cat.name}`} className={(navData) => (navData.isActive ? 'link-active' : '')} >{cat.name}</NavLink>
+              <NavLink key={cat.name} to={cat.name === "all" ? "/" : `/${cat.name}`} className={(navData) => (navData.isActive ? 'link-active' : '')} >{cat.name}</NavLink>
             ))}
           </nav>
 
@@ -100,7 +100,7 @@ class Header extends React.Component {
             </button>
             <Cart total={cart.totalItems} handleCart={this.handleCart} />
           </div>
-          <CartOverlay open={this.state.showCart}  />
+          <CartOverlay open={this.state.showCart} />
         </div>
       </header>
     );
@@ -115,9 +115,6 @@ export default withRouter(Header);
 
 // price dropdown component
 class PriceDropdown extends React.Component {
-
-
-
   render() {
     const { currencies, changeCurrency, closeDropdown } = this.props
     return (
@@ -132,7 +129,6 @@ class PriceDropdown extends React.Component {
 
 // cart menu in header component
 class Cart extends React.Component {
-
   render() {
     const { total, handleCart } = this.props
     return (

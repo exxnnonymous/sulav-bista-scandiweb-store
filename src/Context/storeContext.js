@@ -24,7 +24,7 @@ export class StoreProvider extends React.Component {
     }
   };
 
-  updateCategories = ({ categories, currencies }, activeCurrency) => {
+  initialState = ({ categories, currencies }, activeCurrency) => {
     let active = currencies[0];
 
     if (activeCurrency) {
@@ -188,7 +188,7 @@ export class StoreProvider extends React.Component {
       cart,
 
       updateCart: this.updateCart,
-      updateCategories: this.updateCategories,
+      initialState: this.initialState,
 
       changeCurrency: this.changeCurrency,
 

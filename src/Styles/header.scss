@@ -72,8 +72,10 @@ header {
       .price__menu {
         height: 100%;
         position: relative;
+        cursor: default;
 
         .price__menu-main {
+          cursor: pointer;
           width: 35px;
           .price {
             font-size: 18px;

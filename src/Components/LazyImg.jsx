@@ -1,7 +1,5 @@
 import React from "react"
 
-
-
 export default class LazyImg extends React.Component {
 
     constructor(props) {

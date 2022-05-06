@@ -20,7 +20,7 @@
     width: 410px;
     max-height: calc(100vh - 100px);
     margin-left: auto;
-    padding: 32px 16px;
+    padding: 32px 16px 20px;
     padding-right: 10px;
     @include grid;
 
@@ -167,9 +167,14 @@
         span {
           font-weight: 500;
           font-size: 1rem;
+          span{
+            font-size: .9rem;
+            font-weight: 400;
+          }
         }
       }
       .cart__links {
+        margin-top: 10px;
         a,
         button {
           text-transform: uppercase;

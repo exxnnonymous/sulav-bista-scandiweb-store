@@ -12,6 +12,7 @@ import Spinner from "./spinner";
 const cartRoot = document.getElementById("cart-overlay");
 
 
+// cart overlay
 export default class CartOverlay extends React.Component {
     static contextType = StoreContext
     constructor(props) {
@@ -70,6 +71,8 @@ export default class CartOverlay extends React.Component {
 
 }
 
+
+// cart items wrapper
 class CartBox extends React.Component {
     static contextType = StoreContext
     render() {
@@ -80,7 +83,9 @@ class CartBox extends React.Component {
 
         const { currency, removeFromCart, addToCart } = this.context
 
-        const total = totalPrice(products, currency.active)
+        let total = totalPrice(products, currency.active)
+        const tax = (21 * total) / 100
+        total = total + tax
 
         return (
             <>
@@ -96,7 +101,7 @@ class CartBox extends React.Component {
 
                         <div className="cart__total">
                             <div className="total">
-                                <span>Total</span>
+                                <span>Total <span>(including 21% tax)</span></span>
                                 <span>
                                     {currency.active.symbol} {total.toFixed(2)}
                                 </span>
@@ -113,6 +118,8 @@ class CartBox extends React.Component {
         )
     }
 }
+
+//  each cart items
 class CartItems extends React.Component {
     render() {
         const { brand, name, prices, currency, gallery, attributes, removeFromCart, id, selectedAttribute, quantity, addToCart } = this.props
