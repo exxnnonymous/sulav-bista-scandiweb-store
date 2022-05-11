@@ -11,10 +11,15 @@ class Header extends React.Component {
 
   static contextType = StoreContext;
 
-  state = {
-    showCart: false,
-    showPrice: false
+  constructor(props) {
+    super(props)
+    this.state = {
+      cartOpen: false,
+      dropdownOpen: false
+    }
+
   }
+
 
 
   // handle category links
@@ -28,39 +33,35 @@ class Header extends React.Component {
 
   // handle cart menu
   handleCart = () => {
-    if (!this.state.showCart) {
-      document.body.addEventListener("click", this.closeCart, false);
-    } else {
-      document.body.removeEventListener("click", this.closeCart, false);
-    }
-
-    this.setState(prevState => ({
-      showCart: !prevState.showCart
-    }));
+    this.setState(prev => ({
+      cartOpen: !prev.cartOpen
+    }))
   }
 
   // close cart menu
-  closeCart = (e) => {
-    if ((!e.target.closest('.cart__menu') && !e.target.closest('.cart__box')) || e.target.closest('.cart__links')) this.handleCart();
+  closeCart = () => {
+    if (this.state.cartOpen) {
+      this.setState({
+        cartOpen: false
+      })
+    }
   };
 
 
   // handle price dropdown
   handleDropdown = () => {
-    if (!this.state.showPrice) {
-      document.addEventListener("click", this.closeDropdown, false);
-    } else {
-      document.removeEventListener("click", this.closeDropdown, false);
-    }
-
-    this.setState(prevState => ({
-      showPrice: !prevState.showPrice
-    }));
+    this.setState(prev => ({
+      dropdownOpen: !prev.dropdownOpen
+    }))
   };
 
   // close price dropdown
-  closeDropdown = e => {
-    if (!e || !this.node.contains(e.target)) this.handleDropdown();
+  closeDropdown = () => {
+    if (this.state.dropdownOpen) {
+      this.setState({
+        dropdownOpen: false
+      })
+    }
   };
 
 
@@ -69,7 +70,7 @@ class Header extends React.Component {
     const { categories, currency, changeCurrency, cart } = this.context;
     if (!categories && !currency) return ""
     return (
-      <header>
+      <header onClick={this.closeCart}>
         <div className="container">
           <nav>
             {categories.map((cat) => (
@@ -83,9 +84,7 @@ class Header extends React.Component {
 
 
           <div className="actions">
-            <button ref={node => {
-              this.node = node;
-            }} className={`price__menu ${this.state.showPrice ? "toggled" : ""}`} >
+            <button className={`price__menu ${this.state.dropdownOpen ? "toggled" : ""}`} onBlur={this.closeDropdown}>
               <div className="price__menu-main" onClick={this.handleDropdown}>
                 <div className="price">
                   <span>{currency.active.symbol}</span>
@@ -100,8 +99,8 @@ class Header extends React.Component {
             </button>
             <Cart total={cart.totalItems} handleCart={this.handleCart} />
           </div>
-          <CartOverlay open={this.state.showCart} />
         </div>
+        <CartOverlay cartOpen={this.state.cartOpen} closeCart={this.closeCart} />
       </header>
     );
   }

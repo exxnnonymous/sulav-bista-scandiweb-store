@@ -30,6 +30,7 @@ class Category extends React.Component {
                     title: category
                 }
             })
+
             this.setState({ data: data.category })
 
         } catch (err) {

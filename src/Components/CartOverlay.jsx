@@ -1,5 +1,4 @@
 import React from "react";
-import { createPortal } from "react-dom";
 import { sortAttributes, totalPrice, updateCart } from "Lib/utils";
 import { Minus, Plus } from "Assets/Icons";
 import StoreContext from "Context/storeContext";
@@ -9,7 +8,6 @@ import { Link } from "react-router-dom";
 import "Styles/cartOverlay.scss"
 import Spinner from "./spinner";
 
-const cartRoot = document.getElementById("cart-overlay");
 
 
 // cart overlay
@@ -17,7 +15,6 @@ export default class CartOverlay extends React.Component {
     static contextType = StoreContext
     constructor(props) {
         super(props);
-        this.element = document.createElement("div");
         this.state = {
             products: null,
             error: false,
@@ -28,7 +25,6 @@ export default class CartOverlay extends React.Component {
 
 
     async componentDidMount() {
-        cartRoot.appendChild(this.element);
         await updateCart.bind(this)()
     }
     async componentDidUpdate() {
@@ -38,10 +34,6 @@ export default class CartOverlay extends React.Component {
         }
     }
 
-    componentWillUnmount() {
-        cartRoot.removeChild(this.element);
-
-    }
 
     handleCheckout = () => {
         const { emptyCart, cart } = this.context
@@ -54,19 +46,19 @@ export default class CartOverlay extends React.Component {
 
 
     render() {
-        const { open } = this.props;
+        const { cartOpen, closeCart } = this.props;
         const { cart } = this.context
         const { error, products } = this.state
-        return createPortal(
-            <div className={`cart__overlay ${open ? "open" : ""}`}>
-                <div className="container">
-                    <div className="cart__box bg-white" >
+        return (
+            <div  className={`cart__overlay ${cartOpen ? "open" : ""}`} onClick={closeCart}>
+                <div className="cart__container" >
+                    <div className="cart__box bg-white" onClick={(e)=>{e.stopPropagation()}}>
                         <h3>My Bag, <span>{cart.totalItems} items</span></h3>
 
                         <CartBox error={error} products={products} handleCheckout={this.handleCheckout} />
                     </div>
                 </div>
-            </div>, this.element)
+            </div>)
     }
 
 }

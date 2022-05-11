@@ -1,10 +1,20 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-const localUrl = "http://localhost:4000";
+const config = {
+  typePolicies: {
+    AttributeSet: {
+      keyFields: false,
+    },
+    Attribute: {
+      keyFields: false,
+    },
+  },
+};
+
+const uri = "http://localhost:4000/";
 
 const client = new ApolloClient({
-  uri: localUrl,
-  cache: new InMemoryCache(),
+  uri,
+  cache: new InMemoryCache(config),
 });
-
 export default client;

@@ -24,7 +24,6 @@
         border-radius: 5px;
         display: grid;
         gap: 1rem;
-        box-shadow: 0 0 10px rgba(168, 172, 176, 0.2);
         transition: box-shadow 200ms ease-in;
         position: relative;
         a{
@@ -34,7 +33,7 @@
         }
 
         &:hover {
-          box-shadow: 0 0 10px rgba(168, 172, 176, 0.5);
+          box-shadow: 0 0 5px rgba(168, 172, 176, 0.5);
 
           .image__wrapper button {
             opacity: 1;
