@@ -19,7 +19,6 @@ class Category extends React.Component {
             error: false,
 
         }
-        document.title = `Scandiweb Store`
     }
 
     fetchCategory = async (category) => {

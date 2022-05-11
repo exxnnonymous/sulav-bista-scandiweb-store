@@ -18,7 +18,6 @@ class Product extends React.Component {
     static contextType = StoreContext;
     constructor(props) {
         super(props);
-        document.title = "Scandiweb Store"
 
         this.state = {
             product: null,

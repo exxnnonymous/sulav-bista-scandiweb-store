@@ -50,9 +50,9 @@ export default class CartOverlay extends React.Component {
         const { cart } = this.context
         const { error, products } = this.state
         return (
-            <div  className={`cart__overlay ${cartOpen ? "open" : ""}`} onClick={closeCart}>
+            <div className={`cart__overlay ${cartOpen ? "open" : ""}`} onClick={closeCart}>
                 <div className="cart__container" >
-                    <div className="cart__box bg-white" onClick={(e)=>{e.stopPropagation()}}>
+                    <div className="cart__box bg-white" onClick={(e) => { e.stopPropagation() }}>
                         <h3>My Bag, <span>{cart.totalItems} items</span></h3>
 
                         <CartBox error={error} products={products} handleCheckout={this.handleCheckout} />
@@ -131,16 +131,9 @@ class CartItems extends React.Component {
                         </button>
                         <span>{quantity}</span>
                         <button onClick={() => {
-                            if (quantity === 1) {
-                                // to give priority to the document.body event listener
-                                setTimeout(() => {
-                                    removeFromCart(id, selectedAttribute)
-                                }, 10)
-
-                            } else {
-                                removeFromCart(id, selectedAttribute)
-                            }
-                        }}>
+                            removeFromCart(id, selectedAttribute)
+                        }
+                        }>
                             <Minus />
                         </button>
                     </div>

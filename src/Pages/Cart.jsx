@@ -15,7 +15,6 @@ class CartPage extends React.Component {
     static contextType = StoreContext;
     constructor() {
         super();
-        document.title = "Cart - Scandiweb Store";
         this.state = {
             products: null,
             error: false,
